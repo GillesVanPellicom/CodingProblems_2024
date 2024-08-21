@@ -1,0 +1,8 @@
+# ninja log v6
+3	233	1724255692411152604	CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion/main.cpp.o	193ed9492b882db4
+217	247	1724254454756734277	RGB_to_hex_conversion	6bdeead5e78aabd8
+267	295	1724259949547243978	Snail_sort	cd8d694349eaa6c9
+2	249	1724255699652778650	CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/Snail_sort/main.cpp.o	cdd2eb94929c09e7
+2	267	1724259949282265878	CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o	618a143899a18ef0
+2	269	1724260395213279746	CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o	618a143899a18ef0
+269	298	1724260395480638092	Snail_sort	cd8d694349eaa6c9
