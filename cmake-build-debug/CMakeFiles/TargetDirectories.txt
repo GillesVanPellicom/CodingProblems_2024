@@ -1,5 +1,0 @@
-/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug/CMakeFiles/RGB_to_hex_conversion.dir
-/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug/CMakeFiles/Snail_sort.dir
-/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug/CMakeFiles/n-Queens.dir
-/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug/CMakeFiles/rebuild_cache.dir
