@@ -51,15 +51,21 @@ build cmake_object_order_depends_target_RGB_to_hex_conversion: phony || CMakeFil
 
 build CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion/main.cpp.o: CXX_COMPILER__RGB_to_hex_conversion_unscanned_Debug /Users/gvp/CLionProjects/CodingProblems_2024/src/CodeWars/RGB_to_hex_conversion/main.cpp || cmake_object_order_depends_target_RGB_to_hex_conversion
   DEP_FILE = CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion/main.cpp.o.d
-  FLAGS = -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics
+  FLAGS = -fsanitize=address,undefined -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -fsanitize=address,undefined
   OBJECT_DIR = CMakeFiles/RGB_to_hex_conversion.dir
   OBJECT_FILE_DIR = CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion
 
 build CMakeFiles/RGB_to_hex_conversion.dir/src/utils/ArrayUtils.cpp.o: CXX_COMPILER__RGB_to_hex_conversion_unscanned_Debug /Users/gvp/CLionProjects/CodingProblems_2024/src/utils/ArrayUtils.cpp || cmake_object_order_depends_target_RGB_to_hex_conversion
   DEP_FILE = CMakeFiles/RGB_to_hex_conversion.dir/src/utils/ArrayUtils.cpp.o.d
-  FLAGS = -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics
+  FLAGS = -fsanitize=address,undefined -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -fsanitize=address,undefined
   OBJECT_DIR = CMakeFiles/RGB_to_hex_conversion.dir
   OBJECT_FILE_DIR = CMakeFiles/RGB_to_hex_conversion.dir/src/utils
+
+build CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/n-Queens/main.cpp.o: CXX_COMPILER__RGB_to_hex_conversion_unscanned_Debug /Users/gvp/CLionProjects/CodingProblems_2024/src/CodeWars/n-Queens/main.cpp || cmake_object_order_depends_target_RGB_to_hex_conversion
+  DEP_FILE = CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/n-Queens/main.cpp.o.d
+  FLAGS = -fsanitize=address,undefined -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -fsanitize=address,undefined
+  OBJECT_DIR = CMakeFiles/RGB_to_hex_conversion.dir
+  OBJECT_FILE_DIR = CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/n-Queens
 
 
 # =============================================================================
@@ -69,8 +75,8 @@ build CMakeFiles/RGB_to_hex_conversion.dir/src/utils/ArrayUtils.cpp.o: CXX_COMPI
 #############################################
 # Link the executable RGB_to_hex_conversion
 
-build RGB_to_hex_conversion: CXX_EXECUTABLE_LINKER__RGB_to_hex_conversion_Debug CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion/main.cpp.o CMakeFiles/RGB_to_hex_conversion.dir/src/utils/ArrayUtils.cpp.o
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
+build RGB_to_hex_conversion: CXX_EXECUTABLE_LINKER__RGB_to_hex_conversion_Debug CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/RGB_to_hex_conversion/main.cpp.o CMakeFiles/RGB_to_hex_conversion.dir/src/utils/ArrayUtils.cpp.o CMakeFiles/RGB_to_hex_conversion.dir/src/CodeWars/n-Queens/main.cpp.o
+  FLAGS = -fsanitize=address,undefined -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
   OBJECT_DIR = CMakeFiles/RGB_to_hex_conversion.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -88,7 +94,7 @@ build cmake_object_order_depends_target_Snail_sort: phony || CMakeFiles/Snail_so
 
 build CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o: CXX_COMPILER__Snail_sort_unscanned_Debug /Users/gvp/CLionProjects/CodingProblems_2024/src/CodeWars/Snail_sort/main.cpp || cmake_object_order_depends_target_Snail_sort
   DEP_FILE = CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o.d
-  FLAGS = -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics
+  FLAGS = -fsanitize=address,undefined -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -fsanitize=address,undefined
   OBJECT_DIR = CMakeFiles/Snail_sort.dir
   OBJECT_FILE_DIR = CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort
 
@@ -101,12 +107,43 @@ build CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o: CXX_COMPILER
 # Link the executable Snail_sort
 
 build Snail_sort: CXX_EXECUTABLE_LINKER__Snail_sort_Debug CMakeFiles/Snail_sort.dir/src/CodeWars/Snail_sort/main.cpp.o
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
+  FLAGS = -fsanitize=address,undefined -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
   OBJECT_DIR = CMakeFiles/Snail_sort.dir
   POST_BUILD = :
   PRE_LINK = :
   TARGET_FILE = Snail_sort
   TARGET_PDB = Snail_sort.dbg
+
+# =============================================================================
+# Object build statements for EXECUTABLE target n-Queens
+
+
+#############################################
+# Order-only phony target for n-Queens
+
+build cmake_object_order_depends_target_n-Queens: phony || CMakeFiles/n-Queens.dir
+
+build CMakeFiles/n-Queens.dir/src/CodeWars/n-Queens/main.cpp.o: CXX_COMPILER__n-Queens_unscanned_Debug /Users/gvp/CLionProjects/CodingProblems_2024/src/CodeWars/n-Queens/main.cpp || cmake_object_order_depends_target_n-Queens
+  DEP_FILE = CMakeFiles/n-Queens.dir/src/CodeWars/n-Queens/main.cpp.o.d
+  FLAGS = -fsanitize=address,undefined -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -fcolor-diagnostics -fsanitize=address,undefined
+  OBJECT_DIR = CMakeFiles/n-Queens.dir
+  OBJECT_FILE_DIR = CMakeFiles/n-Queens.dir/src/CodeWars/n-Queens
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target n-Queens
+
+
+#############################################
+# Link the executable n-Queens
+
+build n-Queens: CXX_EXECUTABLE_LINKER__n-Queens_Debug CMakeFiles/n-Queens.dir/src/CodeWars/n-Queens/main.cpp.o
+  FLAGS = -fsanitize=address,undefined -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
+  OBJECT_DIR = CMakeFiles/n-Queens.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = n-Queens
+  TARGET_PDB = n-Queens.dbg
 
 
 #############################################
@@ -142,7 +179,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug
 
-build all: phony RGB_to_hex_conversion Snail_sort
+build all: phony RGB_to_hex_conversion Snail_sort n-Queens
 
 # =============================================================================
 # Built-in targets
