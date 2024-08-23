@@ -111,9 +111,9 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
 
   // Annealing variables
   double T = 100*n; // Temperature T, controls likelyhood of worse solutions being accepted.
-  constexpr double alpha = 0.75; // Cooling rate α, rate of cooling of T each iteration.
-  constexpr double T_min = 0.0; // T_min, annealing will stop when reaching this temperature.
-  const long iteration_max = 100 * pow(2, n) * log(n); // IterationMax = ?, annealing failed when reached.
+  constexpr double alpha = 0.95; // Cooling rate α, rate of cooling of T each iteration.
+  constexpr double T_min = 0.00; // T_min, annealing will stop when reaching this temperature.
+  const long iteration_max = 10 * pow(2, n) * log(n); // IterationMax = ?, annealing failed when reached.
 
   while (T > T_min) {
 
@@ -151,6 +151,7 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
       }
     }
     T *= alpha; // Cool temperature
+
     iterationCount++;
     std::cout << "E = " << E_best << std::endl;
   }
@@ -205,8 +206,8 @@ void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCo
 
 int main() {
   using namespace nQueens;
-  // measurePerformance(50, {0, 1}, 20);
+  measurePerformance(200, {0, 1}, 10);
 
-  std::cout << solveNQueens(100, {0, 1});
+  // std::cout << solveNQueens(100, {0, 1});
   return 0;
 }
