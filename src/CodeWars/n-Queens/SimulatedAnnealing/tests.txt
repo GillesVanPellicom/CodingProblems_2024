@@ -1,0 +1,31 @@
+Performance testing.
+
+    tabulist:
+        (n = 4, epoch = 500)
+        compared to: default version
+        Results:
+            iteration count:
+                pre  : ±41 iterations
+                post : ±26 iterations
+                ±36% decrease
+
+            time elapsed:
+                pre  : ±70.00 ms
+                post : ±200.00 ms
+                ±185% performance loss
+
+        (n = 50, epoch = 20)
+        compared to: default version
+        Results:
+            iteration count:
+                pre  : ±22500 iterations
+                post : ±23000 iterations
+                ±36% decrease
+
+            time elapsed:
+                pre  : ±17000.00 ms
+                post : ±20700.00 ms
+                ±21% performance loss
+
+        Conclusion:
+            Tabulist is expensive to maintain. Expense is greater than gains.

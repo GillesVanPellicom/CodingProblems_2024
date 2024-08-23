@@ -10,12 +10,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
 
 add_executable(RGB_to_hex_conversion src/CodeWars/RGB_to_hex_conversion/main.cpp
         src/utils/ArrayUtils.cpp
-        src/CodeWars/n-Queens/main.cpp
+        src/CodeWars/n-Queens/SimulatedAnnealing/main.cpp
 )
 target_compile_options(RGB_to_hex_conversion PRIVATE ${SANITIZER_FLAGS})
 
 add_executable(Snail_sort src/CodeWars/Snail_sort/main.cpp)
 target_compile_options(Snail_sort PRIVATE ${SANITIZER_FLAGS})
 
-add_executable(n-Queens src/CodeWars/n-Queens/main.cpp)
+add_executable(n-Queens src/CodeWars/n-Queens/SimulatedAnnealing/main.cpp)
 target_compile_options(n-Queens PRIVATE ${SANITIZER_FLAGS})

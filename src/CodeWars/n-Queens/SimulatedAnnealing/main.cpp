@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <random>
 #include <set>
+#include <chrono>
 #include <string>
 // #include "../../utils/ArrayUtils.cpp"
 
@@ -12,6 +13,7 @@
 namespace nQueens {
 using Board = std::vector<int>;
 std::mt19937 gen(std::random_device{}()); // Mersenne Twister random
+int _n = -1;
 
 
 /**
@@ -22,11 +24,10 @@ std::mt19937 gen(std::random_device{}()); // Mersenne Twister random
  * @return energy as 𝕫⁺
  */
 int calculateE(const Board& b) {
-  const int n = static_cast<int>(b.size());
   int E = 0;
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < _n; ++i) {
     // Dont count i == j
-    for (int j = i + 1; j < n; ++j) {
+    for (int j = i + 1; j < _n; ++j) {
       // if (not in same col) or (not in same diagonal)
       // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
       if (b[i] == b[j] || std::abs(b[i] - b[j]) == std::abs(i - j)) {
@@ -36,7 +37,6 @@ int calculateE(const Board& b) {
   }
   return E;
 }
-
 
 /**
  * Generates a random starting board layout.
@@ -70,28 +70,33 @@ Board generateBoard(const int n, const std::pair<int, int>& mandatoryQueenCoordi
  * @return Neighbor board
  */
 Board generateNeighbor(const Board& current, const std::pair<int, int>& mandatoryQueenCoordinates) {
-  const int n = static_cast<int>(current.size());
-
-  std::uniform_int_distribution<> rowGen(0, n - 1); // Uniform integer distribution [0; n-1]
-  std::uniform_int_distribution<> colGen(0, n - 1); // Uniform integer distribution [0; n-1]
+  std::uniform_int_distribution<> rowGen(0, _n - 1); // Uniform integer distribution [0; n-1]
+  std::uniform_int_distribution<> colGen(0, _n - 1); // Uniform integer distribution [0; n-1]
 
   Board neighbor = current;
   auto [mx, my] = mandatoryQueenCoordinates;
 
   int newRow = rowGen(gen);
-  // Ensure that we are not modifying the row of the mandatory queen
-  while (newRow == mx) {
-    newRow = rowGen(gen);
+  int newCol = colGen(gen);
+  if (newRow == mx) {
+    if (newRow < _n-1) {
+      newRow++;
+    } else {
+      newCol = my;
+    }
   }
-  // Generate a new column for the chosen row
-  const int newCol = colGen(gen);
-
   neighbor[newRow] = newCol; // Change column of the chosen row
+
+
 
   return neighbor;
 }
 
+
+long lastIterationCount;
+
 Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
+  _n = n;
   std::uniform_real_distribution<> randZeroOne(0, 1); // Uniform double distribution [0; 1]
   // Set starting values
   Board b_best = generateBoard(n, queenPos);
@@ -105,11 +110,10 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
   long iterationCount = 0;
 
   // Annealing variables
-  double T = 10*n; // Temperature T, controls likelyhood of worse solutions being accepted.
-  constexpr double alpha = 0.8; // Cooling rate α, rate of cooling of T each iteration.
+  double T = 100*n; // Temperature T, controls likelyhood of worse solutions being accepted.
+  constexpr double alpha = 0.75; // Cooling rate α, rate of cooling of T each iteration.
   constexpr double T_min = 0.0; // T_min, annealing will stop when reaching this temperature.
-  const long iteration_max = 5 * pow(2, n) * log(n); // IterationMax = ?, annealing failed when reached.
-  const long tabu_listSize = n*2;
+  const long iteration_max = 100 * pow(2, n) * log(n); // IterationMax = ?, annealing failed when reached.
 
   while (T > T_min) {
 
@@ -118,20 +122,10 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
       return std::vector<int>{};
     }
 
-    Board b_neighbor;
-    int E_neighbor;
-    // Generate valid neighbor using tabu list
-    while (true) {
-      // Neighbor must not have been visited before
-      b_neighbor = generateNeighbor(b_current, queenPos);
-      if (!tabuList.contains(b_neighbor)) {
-        // If neighbor is unique, calculate E
-        E_neighbor = calculateE(b_neighbor);
-        break;
-      }
-    }
+    Board b_neighbor = generateNeighbor(b_current, queenPos);
+    const int E_neighbor = calculateE(b_neighbor);
 
-    int deltaE = E_neighbor - E_current; // ΔE = E_current - E_neighbor
+    const int deltaE = E_neighbor - E_current; // ΔE = E_current - E_neighbor
 
     // ΔE is negative ⟹ solution is better.
     // ΔE is positive ⟹ compute probability of accepting worse solution based on temperature
@@ -146,18 +140,13 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
         E_best = E_current;
       }
 
-      // Update tabu list
-      if (tabuList.size() >= tabu_listSize) {
-        tabuList.erase(tabuList.begin()); // Remove oldest entry
-      }
-      tabuList.insert(b_current);
-
       // If best solution has zero energy, solution is correct. Stop annealing.
       if (E_best == 0) {
         // Solution found
         std::cout << "max = " << iteration_max << std::endl;
         std::cout << "iteration = " << iterationCount << std::endl;
         std::cout << "E_final = " << E_best << std::endl;
+        lastIterationCount = iterationCount;
         return b_best;
       }
     }
@@ -169,6 +158,7 @@ Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
 
   return b_best;
 }
+
 
 std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
   const Board b = simulatedAnnealing(n, mandatoryQueenCoordinates);
@@ -190,16 +180,33 @@ std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
   }
   return res;
 }
+
+
+void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, int epochs) {
+  long total = 0;
+  int i;
+  // Start time
+  const auto start = std::chrono::high_resolution_clock::now();
+  for (i = 0; i < epochs+1; ++i) {
+    solveNQueens(n, mandatoryQueenCoordinates);
+    total += lastIterationCount;
+  }
+  // End time
+  const auto end = std::chrono::high_resolution_clock::now();
+  // Calculate duration in milliseconds
+  const std::chrono::duration<double, std::milli> duration = end - start;
+
+  std::cout << "Iterations on average (n = " << n << ", " << epochs << " epochs) = " << total/i << std::endl;
+  std::cout << "Time elapsed: " << duration.count() << " ms" << std::endl;
+
 }
+}
+
 
 int main() {
   using namespace nQueens;
-  // Board b = {2, 0, 3, 1};
-  // Board b = simulatedAnnealing(4, {0, 0});
-  // printArray(b);
-  std::cout << solveNQueens(4, {0, 1});
-  // std::cout << "E = " << calculateE(b) << std::endl;
-  // printBoard(b);
-  // std::cout << solveNQueens(8, {3, 0});
+  // measurePerformance(50, {0, 1}, 20);
+
+  std::cout << solveNQueens(100, {0, 1});
   return 0;
 }
