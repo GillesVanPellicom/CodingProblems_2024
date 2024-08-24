@@ -53,7 +53,7 @@ n-Queen test suite results:
         Iterations (avg) 	: fail
         Stagnations (avg) 	: fail
         Time elapsed 		: fail
-        Time (avg) 		    : fail
+        Time (avg)          : fail
 
     	Test settings: n = 50, 50 epochs, stag_chk_interval = 3n, stag_rand_amount = ⌊n/6⌋
     	Iterations (avg) 	: 86525
@@ -72,7 +72,7 @@ n-Queen test suite results:
     	Iterations (avg) 	: 31134
     	Stagnations (avg) 	: 98
     	Time elapsed 		: 31828.4 ms
-    	Time (avg) 		    : 636.568 ms
+    	Time (avg)          : 636.568 ms
 
         (2/2)
     	Test settings: n = 50, 50 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/4⌋
@@ -119,4 +119,4 @@ n-Queen test suite results:
     	Iterations (avg) 	: 11898
     	Stagnations (avg) 	: 19
     	Time elapsed 		: 56373.0 ms
-    	Time (avg) 			: 1105.35 ms
+    	Time (avg)          : 1105.35 ms

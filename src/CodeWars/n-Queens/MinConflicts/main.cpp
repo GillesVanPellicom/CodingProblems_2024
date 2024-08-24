@@ -184,8 +184,12 @@ void printBoard(Board b) {
 std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
   std::string res;
 
-  // Base case. Can't compute for n = 3
-  if (n == 3) {
+  // Base cases
+  if (n == 1) {
+    // Trivial solution
+    return "Q";
+  } else if (n < 4) {
+    // No solution
     return res;
   }
 
