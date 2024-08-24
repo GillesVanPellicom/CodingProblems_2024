@@ -1,0 +1,122 @@
+n-Queen test suite results:
+(algorithm: minConflicts, ver: v0.2.0 "local minima detection/resolution")
+
+    Test suite results (n=8):
+
+        Test settings: n = 8, 10000 epochs, stag_chk_interval = 1, stag_rand_amount = 1
+        Iterations (avg) 	: fail
+        Stagnations (avg) 	: fail
+        Time elapsed 		: fail
+        Time (avg)   		: fail
+
+        Test settings: n = 8, 10000 epochs, stag_chk_interval = 4n, stag_rand_amount = 1
+        Iterations (avg) 	: 264
+        Stagnations (avg) 	: 7
+        Time elapsed 		: 14737 ms
+        Time (avg)   		: 14.737 ms
+
+        Test settings: n = 8, 10000 epochs, stag_chk_interval = 4n, stag_rand_amount = 2
+        Iterations (avg) 	: 242
+        Stagnations (avg) 	: 6
+        Time elapsed 		: 13739 ms
+        Time (avg)   		: 13.739 ms
+
+
+        Test settings: n = 8, 10000 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/2⌋
+        Iterations (avg) 	: 244
+        Stagnations (avg) 	: 6
+        Time elapsed 		: 13925.6 ms
+        Time (avg)   		: 13.9256 ms
+
+    	Test settings: n = 8, 10000 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n⌋
+    	Iterations (avg) 	: 270
+    	Stagnations (avg) 	: 6
+    	Time elapsed 		: 15480.4 ms
+    	Time (avg)   		: 15.4804 ms
+
+    	Test settings: n = 8, 10000 epochs, stag_chk_interval = 5n, stag_rand_amount = ⌊n/2⌋
+    	Iterations (avg) 	: 248
+    	Stagnations (avg) 	: 4
+    	Time elapsed  		: 13915.6 ms
+    	Time (avg)  		: 13.9156 ms
+
+
+    Test suite results (n=50):
+
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 3n, stag_rand_amount = ⌊n/3⌋
+    	Iterations (avg) 	: 91861
+    	Stagnations (avg) 	: 324
+    	Time elapsed   		: 436764 ms
+    	Time (avg)     		: 8735.2 ms
+
+        Test settings: n = 50, 50 epochs, stag_chk_interval = 3n, stag_rand_amount = ⌊n/4⌋
+        Iterations (avg) 	: fail
+        Stagnations (avg) 	: fail
+        Time elapsed 		: fail
+        Time (avg) 		    : fail
+
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 3n, stag_rand_amount = ⌊n/6⌋
+    	Iterations (avg) 	: 86525
+    	Stagnations (avg) 	: 392
+    	Time elapsed 		: 410642 ms
+    	Time (avg)   		: 8212.8 ms
+
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/3⌋
+    	Iterations (avg) 	: 34701
+    	Stagnations (avg) 	: 103
+    	Time elapsed 		: 164030 ms
+    	Time (avg)  		: 3280.6 ms
+
+        (1/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 31134
+    	Stagnations (avg) 	: 98
+    	Time elapsed 		: 31828.4 ms
+    	Time (avg) 		    : 636.568 ms
+
+        (2/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 48980
+    	Stagnations (avg) 	: 156
+    	Time elapsed 		: 232649 ms
+    	Time (avg)  		: 4652.9 ms
+
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 4n, stag_rand_amount = ⌊n/6⌋
+    	Iterations (avg) 	: 41816
+    	Stagnations (avg) 	: 146
+    	Time elapsed 		: 200655 ms
+    	Time (avg)    		: 4013.1 ms
+
+        (1/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 5n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 19890
+    	Stagnations (avg) 	: 50
+    	Time elapsed 		: 94265.4 ms
+    	Time (avg)  		: 1885.30 ms
+
+        (2/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 5n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 26791
+    	Stagnations (avg) 	: 69
+    	Time elapsed 		: 126917 ms
+    	Time (avg)  		: 2538.3 ms
+
+        (1/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 6n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 26473
+    	Stagnations (avg) 	: 58
+    	Time elapsed 		: 124839 ms
+    	Time (avg)  		: 2496.7 ms
+
+        (2/2)
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 6n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 23599
+    	Stagnations (avg) 	: 51
+    	Time elapsed 		: 112323 ms
+    	Time (avg)          : 2246.4 ms
+
+    	Test settings: n = 50, 50 epochs, stag_chk_interval = 8n, stag_rand_amount = ⌊n/4⌋
+    	Iterations (avg) 	: 11898
+    	Stagnations (avg) 	: 19
+    	Time elapsed 		: 56373.0 ms
+    	Time (avg) 			: 1105.35 ms

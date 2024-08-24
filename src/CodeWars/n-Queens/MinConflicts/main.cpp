@@ -1,3 +1,11 @@
+// ╔══════════════════════════════════════════════════════════════════════════════════╗
+// ║ Project      : CodeWars - n-Queens (minConflicts)                                ║
+// ║ Version      : v0.2.0 "local minima detection/resolution"                        ║
+// ║ File         : main.cpp                                                          ║
+// ║ Author(s)    : Gilles Van pellicom                                               ║
+// ║ Date         : 2024/08/22                                                        ║
+// ╚══════════════════════════════════════════════════════════════════════════════════╝
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -6,7 +14,9 @@
 #include <set>
 #include <chrono>
 #include <string>
+#include <__algorithm/ranges_max.h>
 // #include "../../utils/ArrayUtils.cpp"
+
 
 
 namespace nQueens {
@@ -29,7 +39,22 @@ int calculateE(const Board& b, const int rowPos) {
       ++E;
     }
   }
-  return E-1;
+  return E - 1;
+}
+
+int calculateFullE(const Board& b) {
+  int E = 0;
+  for (int i = 0; i < _n; ++i) {
+    // Dont count i == j
+    for (int j = i + 1; j < _n; ++j) {
+      // if (not in same col) or (not in same diagonal)
+      // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
+      if (b[i] == b[j] || std::abs(b[i] - b[j]) == std::abs(i - j)) {
+        ++E;
+      }
+    }
+  }
+  return E;
 }
 
 
@@ -56,32 +81,74 @@ Board generateBoard(const int n, const std::pair<int, int>& mandatoryQueenCoordi
   return res;
 }
 
-long iterationCount;
+long iterationCount = 0;
+int stagnationCount = 0;
 
 
 Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
+  // Initialize _n
   _n = n;
-  Board b = generateBoard(n, queenPos);
-  while (true) {
 
+  // Initialize board
+  Board b = generateBoard(n, queenPos);
+
+  // Stagnation detection variables
+  // stagnationInterval = max(⌊c_1 ⋅ n⌋, c_2) where c = constant
+  const int stagnationInterval = std::ranges::max(static_cast<int>(floor(8 * n)), 30);
+  int stagnationSample = calculateFullE(b);
+
+  while (true) {
     iterationCount++;
-    int E_highest = 0;
+    int E_best = 0;
     std::vector<int> highestConflictRows;
 
     for (int i = 0; i < n; ++i) {
-      int E_current = calculateE(b, i);
-      if (E_current > E_highest) {
-        E_highest = E_current;
+      // If E_current > E_best, E_current is the new best
+      if (const int E_current = calculateE(b, i);
+        E_current > E_best) {
+        E_best = E_current;
+        // Clear highest conflict list since it's populated only by lower E's.
         highestConflictRows.clear();
         highestConflictRows.push_back(i);
-      } else if (E_current == E_highest) {
+      } else if (E_current == E_best) {
+        // If E_current == E_best, add to list
         highestConflictRows.push_back(i);
       }
     }
 
-    if (E_highest == 0) {
+    // Check if solution satisfies constraints
+    const int E_board = calculateFullE(b);
+    if (E_best == 0) {
       // done
+      std::cout << "Finished at iteration " << iterationCount << std::endl;
+
       return b;
+    }
+
+    // Check stagnation every max(⌊c ⋅ n⌋, 100) iterations to combat local minima
+    if (iterationCount % stagnationInterval == 0) {
+      std::cout << "Stagnation check: " << std::endl
+          << "Current iteration = " << iterationCount << std::endl
+          << "E = " << E_board << std::endl;
+
+      // if |E_current - stagnationSample| <= tolerance
+      if (std::abs(E_board - stagnationSample) <= 2) {
+        // Stagnation detected.
+        stagnationCount++;
+        std::cout << "Stagnation count = " << stagnationCount << std::endl;
+
+        for (int i = 0; i < floor(n/4); ++i) {
+          std::uniform_int_distribution<> rowGen(0, n - 1);
+          std::uniform_int_distribution<> colGen(0, n - 1);
+          const int row = rowGen(gen);
+          if (row == queenPos.second) {
+            continue;
+          }
+          b[row] = colGen(gen);
+        }
+      }
+      // take new sample for next stagnation check
+      stagnationSample = E_board;
     }
 
     std::uniform_int_distribution<> rowGen(0, static_cast<int>(highestConflictRows.size()) - 1);
@@ -92,9 +159,8 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
       std::uniform_int_distribution<> colGen(0, _n - 1); // Uniform integer distribution [0; n-1]
       b[row] = colGen(gen);
     }
-    std::cout << "E = " << E_highest << std::endl;
-
   }
+  // Unreachable but I like it so it can stay
   return b;
 }
 
@@ -116,8 +182,14 @@ void printBoard(Board b) {
 
 
 std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
-  const Board b = minConflicts(n, mandatoryQueenCoordinates);
   std::string res;
+
+  // Base case. Can't compute for n = 3
+  if (n == 3) {
+    return res;
+  }
+
+  const Board b = minConflicts(n, mandatoryQueenCoordinates);
 
   if (b.empty()) {
     return res;
@@ -137,36 +209,39 @@ std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
 }
 
 void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, int epochs) {
-  long total = 0;
   int i;
   // Start time
   const auto start = std::chrono::high_resolution_clock::now();
-  for (i = 0; i < epochs+1; ++i) {
+  for (i = 0; i < epochs + 1; ++i) {
     solveNQueens(n, mandatoryQueenCoordinates);
-    total += iterationCount;
   }
   // End time
   const auto end = std::chrono::high_resolution_clock::now();
   // Calculate duration in milliseconds
   const std::chrono::duration<double, std::milli> duration = end - start;
-
-  std::cout << "Iterations on average (n = " << n << ", " << epochs << " epochs) = " << total/i << std::endl;
-  std::cout << "Time elapsed: " << duration.count() << " ms" << std::endl;
-
+  std::cout
+        << "Test suite results:\n"
+      << "\tTest settings: n = " << n << ", " << epochs << " epoch\n"
+      << "\tIterations (avg) \t: " << iterationCount / i << "\n"
+      << "\tStagnations (avg) \t: " << stagnationCount / i << "\n"
+      << "\tTime elapsed \t\t: " << duration.count() << " ms\n"
+      << "\tTime (avg) \t\t\t: " << (double) (duration.count()/ (double) epochs) << " ms\n" << std::endl;
 }
 }
 
 int main() {
   using namespace nQueens;
-  int n = 80;
-  // // measurePerformance(50, {0, 1}, 20);
-  // Board b = minConflicts(n, {0, 1});
+  constexpr int n = 50;
+
+  // Board b = minConflicts(n, {0, 3});
   // for (int i = 0; i < n; ++i) {
   //   std::cout << calculateE(b, i) << " ";
   // }
   // std::cout << std::endl;
   // printBoard(b);
-      measurePerformance(n, {0, 3}, 1);
+
+  measurePerformance(n, {0, 3}, 50);
+
   // std::cout << solveNQueens(n, {0, 3});
   return 0;
 }

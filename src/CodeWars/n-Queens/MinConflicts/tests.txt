@@ -1,9 +1,0 @@
-no cache:
-    (n = 200, 40 epochs)
-    Iterations on average   : 182800 it
-    Time elapsed            : 336675 ms
-
-cache:
-    (n = 200, 40 epochs)
-    Iterations on average   : 0
-    Time elapsed            : 316204 ms
