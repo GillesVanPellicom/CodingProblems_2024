@@ -18,24 +18,24 @@
 // #include "../../utils/ArrayUtils.cpp"
 
 
-
 namespace nQueens {
 using Board = std::vector<int>;
 std::mt19937 gen(std::random_device{}()); // Mersenne Twister random
 int _n = -1;
 /**
- * Calculates the energy (E) of a specified board.
+ * Calculates the energy (E) of a specified queen.
  * The higher E, the more conflicts.
- * A solved board is E = 0
+ * No conflicts is E = 0
  * @param b Board from which to calculate E
+ * @param row Row of queen to check
  * @return energy as 𝕫⁺
  */
-int calculateE(const Board& b, const int rowPos) {
+int calculateE(const Board& b, const int row) {
   int E = 0;
   for (int i = 0; i < _n; ++i) {
     // if (not in same col) or (not in same diagonal)
     // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
-    if (b[rowPos] == b[i] || std::abs(b[rowPos] - b[i]) == std::abs(rowPos - i)) {
+    if (b[row] == b[i] || std::abs(b[row] - b[i]) == std::abs(row - i)) {
       ++E;
     }
   }
@@ -94,7 +94,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 
   // Stagnation detection variables
   // stagnationInterval = max(⌊c_1 ⋅ n⌋, c_2) where c = constant
-  const int stagnationInterval = std::ranges::max(static_cast<int>(floor(8 * n)), 30);
+  const int stagnationInterval = std::ranges::max(static_cast<int>(floor(10 * n)), 30);
   int stagnationSample = calculateFullE(b);
 
   while (true) {
@@ -132,12 +132,12 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
           << "E = " << E_board << std::endl;
 
       // if |E_current - stagnationSample| <= tolerance
-      if (std::abs(E_board - stagnationSample) <= 2) {
+      if (std::abs(E_board - stagnationSample) <= 0) {
         // Stagnation detected.
         stagnationCount++;
         std::cout << "Stagnation count = " << stagnationCount << std::endl;
 
-        for (int i = 0; i < floor(n/4); ++i) {
+        for (int i = 0; i < floor(n / 3.5); ++i) {
           std::uniform_int_distribution<> rowGen(0, n - 1);
           std::uniform_int_distribution<> colGen(0, n - 1);
           const int row = rowGen(gen);
@@ -164,9 +164,9 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
   return b;
 }
 
-void printBoard(Board b) {
+void printBoard(const Board& b) {
   std::string res;
-  int n = b.size();
+  const int n = static_cast<int>(b.size());
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
       if (b[j] == i) {
@@ -181,7 +181,7 @@ void printBoard(Board b) {
 }
 
 
-std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
+std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
   std::string res;
 
   // Base cases
@@ -212,11 +212,11 @@ std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
   return res;
 }
 
-void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, int epochs) {
+void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, const int epochs) {
   int i;
   // Start time
   const auto start = std::chrono::high_resolution_clock::now();
-  for (i = 0; i < epochs + 1; ++i) {
+  for (i = 0; i < epochs; ++i) {
     solveNQueens(n, mandatoryQueenCoordinates);
   }
   // End time
@@ -224,18 +224,18 @@ void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCo
   // Calculate duration in milliseconds
   const std::chrono::duration<double, std::milli> duration = end - start;
   std::cout
-        << "Test suite results:\n"
-      << "\tTest settings: n = " << n << ", " << epochs << " epoch\n"
+      << "Test suite results:\n"
+      << "\tTest settings: n = " << n << ", " << epochs << " epochs\n"
       << "\tIterations (avg) \t: " << iterationCount / i << "\n"
       << "\tStagnations (avg) \t: " << stagnationCount / i << "\n"
       << "\tTime elapsed \t\t: " << duration.count() << " ms\n"
-      << "\tTime (avg) \t\t\t: " << (double) (duration.count()/ (double) epochs) << " ms\n" << std::endl;
+      << "\tTime (avg)   \t\t: " << (double) (duration.count() / (double) epochs) << " ms\n" << std::endl;
 }
 }
 
 int main() {
   using namespace nQueens;
-  constexpr int n = 50;
+  constexpr int n = 500;
 
   // Board b = minConflicts(n, {0, 3});
   // for (int i = 0; i < n; ++i) {
@@ -244,7 +244,7 @@ int main() {
   // std::cout << std::endl;
   // printBoard(b);
 
-  measurePerformance(n, {0, 3}, 50);
+  measurePerformance(n, {0, 3}, 1);
 
   // std::cout << solveNQueens(n, {0, 3});
   return 0;
