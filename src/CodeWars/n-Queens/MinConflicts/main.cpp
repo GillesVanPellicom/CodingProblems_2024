@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════════════════════╗
 // ║ Project      : CodeWars - n-Queens (minConflicts)                                ║
-// ║ Version      : v0.2.1 "local minima detection/resolution: tri-sampling"          ║
+// ║ Version      : v0.2.2 "local minima detection/resolution: dynamic perturbation"  ║
 // ║ File         : main.cpp                                                          ║
 // ║ Author(s)    : Gilles Van pellicom                                               ║
 // ║ Date         : 2024/08/22                                                        ║
@@ -92,16 +92,20 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 
   // Initialize board
   Board b = generateBoard(n, queenPos);
-
+  int E_begin = calculateFullE(b);
   std::uniform_int_distribution<> nGen(0, n - 1);
 
 
   // Stagnation detection variables
   // stagnationInterval = max(⌊c_1 ⋅ n⌋, c_2) where c = constant
-  const int stagnationInterval = std::ranges::max(static_cast<int>(floor(10 * n)), 30);
+  const int stagnationCheckInterval = std::ranges::max(static_cast<int>(floor(10 * n)), 30);
+  // Initialize stagnation check sample variables
   int stagnationSampleOne = calculateFullE(b);
   int stagnationSampleTwo = stagnationSampleOne;
   int stagnationSampleThree = stagnationSampleOne;
+  // Precompute stagnation check intervals
+  const int stagnationIntervalOne = static_cast<int>(std::floor(stagnationCheckInterval / 1.5));
+  const int stagnationIntervalTwo = static_cast<int>(std::floor(stagnationCheckInterval / 3.0));
 
   while (true) {
     iterationCount++;
@@ -132,17 +136,28 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
       return b;
     }
 
-    if (iterationCount % static_cast<int>(std::floor(stagnationInterval / 1.5)) == 0) {
+
+    // Take samples for stagnationcheck
+    if (iterationCount % stagnationIntervalOne == 0) {
       stagnationSampleTwo = E_board;
     }
-    if (iterationCount % static_cast<int>(std::floor(stagnationInterval / 3)) == 0) {
+    if (iterationCount % stagnationIntervalTwo == 0) {
       stagnationSampleThree = E_board;
     }
+
     // Check stagnation every max(⌊c_1 ⋅ n⌋, c_2) iterations to combat local minima
-    if (iterationCount % stagnationInterval == 0) {
+    if (iterationCount % stagnationCheckInterval == 0) {
       std::cout << "Stagnation check: " << std::endl
           << "Current iteration = " << iterationCount << std::endl
           << "E = " << E_board << std::endl;
+      // std::cout << "stagnationCheckInterval = " << stagnationCheckInterval << "\n"
+      //     << "stagnationIntervalOne = " << stagnationIntervalOne << "\n"
+      //     << "stagnationIntervalTwo = " << stagnationIntervalTwo << "\n"
+      //     << "stagnationSampleOne = " << stagnationSampleOne << "\n"
+      //     << "stagnationSampleTwo = " << stagnationSampleTwo << "\n"
+      //     << "stagnationSampleThree = " << stagnationSampleThree << "\n"
+      //     << "stagnationCount = " << stagnationCount << "\n"
+      //     << "E_begin = " << E_begin << std::endl;
 
       // if all samples are equal
       if (stagnationSampleOne == stagnationSampleTwo &&
@@ -153,8 +168,11 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
         std::cout << "Stagnation count = " << stagnationCount << std::endl;
 
         // Attempt to escape minima by perturbing the board
-        for (int i = 0; i < floor(n / 3.5); ++i) {
-           std::uniform_int_distribution<> stagColGen(0, n - 1);
+        // Perbut
+        // Perturbation = ⌈min_perbutation + (E_current / E_begin) * (max_perbutation - min_perbutation)⌉
+        // Perturbation = ⌈n/8 + (E_board / E_begin) * (n/3.5 - n/8)⌉
+        // Ceil so that Perturbation < 1 will always result in at least one change
+        for (int i = 0; i < ceil(n / 15.0 + (static_cast<double>(E_board) / E_begin) * (n / 3.5 - n / 15.0)); ++i) {
           const int row = nGen(gen);
           // Ignore manditory queen row
           if (row == queenPos.second) {
@@ -169,7 +187,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
     }
 
 
-     std::uniform_int_distribution<> conflictGen(0, static_cast<int>(highestConflictRows.size()) - 1);
+    std::uniform_int_distribution<> conflictGen(0, static_cast<int>(highestConflictRows.size()) - 1);
 
     if (const int row = highestConflictRows[conflictGen(gen)]; row == queenPos.second) {
       b[row] = queenPos.first;
@@ -244,6 +262,7 @@ void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCo
       << "Test suite results:\n"
       << "\tTest settings: n = " << n << ", " << epochs << " epochs\n"
       << "\tIterations (avg) \t: " << iterationCount / i << "\n"
+      << "\tStagnations total \t: " << stagnationCount << "\n"
       << "\tStagnations (avg) \t: " << stagnationCount / i << "\n"
       << "\tTime elapsed \t\t: " << duration.count() << " ms\n"
       << "\tTime (avg)   \t\t: " << (double) (duration.count() / (double) epochs) << " ms\n" << std::endl;
@@ -254,7 +273,7 @@ int main() {
   using namespace nQueens;
   constexpr int n = 200;
 
-  // Board b = minConflicts(n, {0, 3});
+  // Board b = minConflicts(n, {0, 1});
   // for (int i = 0; i < n; ++i) {
   //   std::cout << calculateE(b, i) << " ";
   // }

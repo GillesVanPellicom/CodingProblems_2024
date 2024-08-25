@@ -54,4 +54,9 @@ n-Queen test suite results:
     	Time (avg)   		: 21070.7 ms
 
 
+    	upper_limit_perturbation - ((current_energy - E_min) / (E_max - E_min)) * (upper_limit_perturbation - lower_limit_perturbation)
+
+    	4/n - ((current_energy) / 200) * (4/n - 8/n)
+
+
 
