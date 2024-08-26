@@ -2,6 +2,9 @@ n-Queen test suite results:
 (algorithm: minConflicts, ver: v0.2.1 "local minima detection/resolution: tri-sampling")
 
     NOTE: stag_rnge is deprecated. Default: stag_rnge = 0
+          Since false positives are now minimized compared to v0.2.0, previous settings may be suboptimal.
+          Goal of tests is to re-determine the best variable setting as to fine-tune the minima d/r.
+
 
     Test suite results (n=200):
 
@@ -52,11 +55,3 @@ n-Queen test suite results:
     	Stagnations (avg) 	: 1
     	Time elapsed 		: 210707 ms
     	Time (avg)   		: 21070.7 ms
-
-
-    	upper_limit_perturbation - ((current_energy - E_min) / (E_max - E_min)) * (upper_limit_perturbation - lower_limit_perturbation)
-
-    	4/n - ((current_energy) / 200) * (4/n - 8/n)
-
-
-

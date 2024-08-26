@@ -1,6 +1,10 @@
 n-Queen test suite results:
 (algorithm: minConflicts, ver: v0.2.0 "local minima detection/resolution")
 
+    NOTE: Goal of tests is to determine the best variable setting as to fine-tune the minima d/r.
+          Starting with small n, working up.
+
+
     Test suite results (n=8):
 
         Test settings: n = 8, 10000 epochs, stag_chk_intrv = 1, stag_rand_amnt = 1, stag_rnge = 2

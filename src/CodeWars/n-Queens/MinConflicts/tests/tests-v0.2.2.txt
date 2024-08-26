@@ -5,6 +5,9 @@ n-Queen test suite results:
           New variables: stag_rand_amnt_max, stag_rand_amnt_min
           Perturbation = ⌈stag_rand_amnt_min + (E_current / E_begin) * (stag_rand_amnt_max - stag_rand_amnt_min)⌉
 
+          Goal of tests is to see if attempt in minimizing lost computation cycles because of overzealous perturbing
+          in late stages of the algorithm is effective.
+
 
     Test suite results (n=200):
 

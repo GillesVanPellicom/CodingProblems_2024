@@ -1,0 +1,43 @@
+n-Queen test suite results:
+(algorithm: minConflicts, ver: v0.3.0 "greedy-random board initialization (gan-init)")
+
+    NOTE: gan-init board initialization implemented.
+          Goal is get E value low for starting board but still effectively search solution space as with random.
+          Tests show significant improvement over v0.2.2
+
+
+    Test suite results (n=200):
+
+        (1/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/3.5, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 8242
+    	Stagnations total 	: 2
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 116722 ms
+    	Time (avg)   		: 11672.2 ms
+
+        (2/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/3.5, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 7414
+    	Stagnations total 	: 1
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 105135 ms
+    	Time (avg)   		: 10513.5 ms
+
+    	(3/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/3.5, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 10704
+    	Stagnations total 	: 3
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 149992 ms
+    	Time (avg)   		: 14999.2 ms
+
+
+    Test suite results (n=500):
+
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/3.5, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 30076
+    	Stagnations total 	: 0
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 270103 ms
+    	Time (avg)   		: 270103 ms (±40% improvement versus v0.2.0)
