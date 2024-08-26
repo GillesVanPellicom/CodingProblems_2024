@@ -219,7 +219,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
         // Perturbation = ⌈min_perbutation + (E_current / E_begin) * (max_perbutation - min_perbutation)⌉
         // Perturbation = ⌈n/8 + (E_board / E_begin) * (n/3.5 - n/8)⌉
         // Ceil so that Perturbation < 1 will always result in at least one change
-        for (int i = 0; i < ceil(n / 8.0 + (static_cast<double>(E_board) / E_begin) * (n / 3.5 - n / 8.0)); ++i) {
+        for (int i = 0; i < ceil(n / 8.0 + (static_cast<double>(E_board) / E_begin) * (n / 2 - n / 8.0)); ++i) {
           const int row = nGen(gen);
           // Ignore manditory queen row
           if (row == queenPos.second) {
@@ -318,7 +318,7 @@ void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCo
 
 int main() {
   using namespace nQueens;
-  constexpr int n = 500;
+  constexpr int n = 200;
 
   // Board b = minConflicts(n, {0, 1});
   // for (int i = 0; i < n; ++i) {
@@ -327,7 +327,7 @@ int main() {
   // std::cout << std::endl;
   // printBoard(b);
 
-  measurePerformance(n, {0, 3}, 1);
+  measurePerformance(n, {0, 3}, 10);
 
   // std::cout << solveNQueens(n, {0, 3});
   return 0;

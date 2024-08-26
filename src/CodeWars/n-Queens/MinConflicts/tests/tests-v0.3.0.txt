@@ -32,6 +32,30 @@ n-Queen test suite results:
     	Time elapsed 		: 149992 ms
     	Time (avg)   		: 14999.2 ms
 
+        (1/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/2, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 9837
+    	Stagnations total 	: 2
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 139690 ms
+    	Time (avg)   		: 13969 ms
+
+        (2/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/2, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 8995
+    	Stagnations total 	: 0
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 131149 ms
+    	Time (avg)   		: 13114.9 ms
+
+        (2/3)
+    	Test settings: 10 epochs, stag_chk_intrv = 10n, stag_rand_amnt_max = n/2, stag_rand_amnt_min = n/8
+    	Iterations (avg) 	: 8965
+    	Stagnations total 	: 5
+    	Stagnations (avg) 	: 0
+    	Time elapsed 		: 130923 ms
+    	Time (avg)   		: 13092.3 ms
+
 
     Test suite results (n=500):
 
