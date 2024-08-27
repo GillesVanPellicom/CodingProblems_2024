@@ -1,29 +1,52 @@
+// ╔══════════════════════════════════════════════════════════════════════════════════╗
+// ║ Project      : CodeWars - n-Queens (minConflicts)                                ║
+// ║ Version      : v0.3.0 "greedy-random board initialization (gan-init)"            ║
+// ║ File         : main.cpp                                                          ║
+// ║ Author(s)    : Gilles Van pellicom                                               ║
+// ║ Date         : 2024/08/22                                                        ║
+// ╚══════════════════════════════════════════════════════════════════════════════════╝
+
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <cstdlib>
 #include <random>
-#include <set>
 #include <chrono>
 #include <string>
 // #include "../../utils/ArrayUtils.cpp"
 
-// Board datatype. Index = row, value = col.
-// Only one piece per row possible so no need for 2D array.
+
 namespace nQueens {
+// Global variables
 using Board = std::vector<int>;
 std::mt19937 gen(std::random_device{}()); // Mersenne Twister random
+
+// Profiling variables
+long iterationCount = 0;
+int stagnationCount = 0;
+
 int _n = -1;
-
-
 /**
- * Calculates the energy (E) of a specified board.
+ * Calculates the energy (E) of a specified queen.
  * The higher E, the more conflicts.
- * A solved board is E = 0
+ * No conflicts is E = 0
  * @param b Board from which to calculate E
+ * @param row Row of queen to check
  * @return energy as 𝕫⁺
  */
-int calculateE(const Board& b) {
+int calculateE(const Board& b, const int row) {
+  int E = 0;
+  for (int i = 0; i < _n; ++i) {
+    // if (not in same col) or (not in same diagonal)
+    // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
+    if (b[row] == b[i] || std::abs(b[row] - b[i]) == std::abs(row - i)) {
+      ++E;
+    }
+  }
+  return E - 1;
+}
+
+int calculateFullE(const Board& b) {
   int E = 0;
   for (int i = 0; i < _n; ++i) {
     // Dont count i == j
@@ -38,132 +61,221 @@ int calculateE(const Board& b) {
   return E;
 }
 
+
 /**
- * Generates a random starting board layout.
- * One mandatory queen coordinate is required
+ * Generates starting board layout
+ * One mandatory queen coordinate is required?
  * Only one queen can generate per row.
+ * Uses a random-greedy initialization algorithm (gan-init).
+ * gan-init tries to make the board as low in energy as possible,
+ * but still introduces some randomness
+ * so as to be able to explore the solution space effectively.
  *
  * @param n board size (n*n) and amount of queens
  * @param mandatoryQueenCoordinates
  * @return Randomised starting board
  */
 Board generateBoard(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
-  std::uniform_int_distribution<> rand(0, n - 1); // Uniform integer distribution [0; n]
+    Board res(n, -1);  // Initialize board with -1, indicating no queen placed yet.
+    auto [my, mx] = mandatoryQueenCoordinates;
 
-  Board res;
-  auto [mx, my] = mandatoryQueenCoordinates;
-  // For each row, choose a pseudo-random col
-  for (int i = 0; i < n; ++i) {
-    res.emplace_back(rand(gen));
-  }
-  // Ensure mandatory queen is correct
-  res[mx] = my;
-  return res;
-}
+    // Mandatory queen
+    res[mx] = my;
 
+    std::uniform_int_distribution<> rand(0, n - 1); // Random distribution for perturbation
 
-/**
- * Generates a neighbor of the given board.
- *
- * @param current Current board
- * @param mandatoryQueenCoordinates
- * @return Neighbor board
- */
-Board generateNeighbor(const Board& current, const std::pair<int, int>& mandatoryQueenCoordinates) {
-  std::uniform_int_distribution<> rowGen(0, _n - 1); // Uniform integer distribution [0; n-1]
-  std::uniform_int_distribution<> colGen(0, _n - 1); // Uniform integer distribution [0; n-1]
+    // Place queens in remaining rows
+    for (int i = 0; i < n; ++i) {
+        if (i == mx) continue;  // Skip the mandatory queen's row
 
-  Board neighbor = current;
-  auto [mx, my] = mandatoryQueenCoordinates;
+        int minConflicts = n + 1;  // Set to max possible conflicts + 1
+        std::vector<int> bestCols;
 
-  int newRow = rowGen(gen);
-  int newCol = colGen(gen);
-  if (newRow == mx) {
-    if (newRow < _n-1) {
-      newRow++;
-    } else {
-      newCol = my;
+        // Evaluate all columns in row `i` to find those with the fewest conflicts
+        for (int col = 0; col < n; ++col) {
+            res[i] = col;  // Tentatively place queen
+            int conflicts = 0;
+
+            // Calculate conflicts for tentative placement
+            for (int j = 0; j < i; ++j) {
+                if (res[j] == col || std::abs(res[j] - col) == std::abs(j - i)) {
+                    conflicts++;
+                }
+            }
+
+            // Update best columns if this placement is as good as the current best
+            if (conflicts < minConflicts) {
+                minConflicts = conflicts;
+                bestCols.clear();
+                bestCols.push_back(col);
+            } else if (conflicts == minConflicts) {
+                bestCols.push_back(col);
+            }
+        }
+
+        // Randomly select one of the best columns to place the queen
+        std::uniform_int_distribution<> bestColRand(0, static_cast<int>(bestCols.size()) - 1);
+        res[i] = bestCols[bestColRand(gen)];
     }
-  }
-  neighbor[newRow] = newCol; // Change column of the chosen row
 
+    // Apply random perturbation to introduce additional variability
+    for (int i = 0; i < n / 10; ++i) {
 
-
-  return neighbor;
+        if (const int row = rand(gen);
+          row != mx) {  // Avoid perturbing the mandatory queen
+            res[row] = rand(gen);
+        }
+    }
+    return res;
 }
 
 
-long lastIterationCount;
-
-Board simulatedAnnealing(const int n, const std::pair<int, int>& queenPos) {
+Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
+  // Initialize _n
   _n = n;
-  std::uniform_real_distribution<> randZeroOne(0, 1); // Uniform double distribution [0; 1]
-  // Set starting values
-  Board b_best = generateBoard(n, queenPos);
-  int E_best = calculateE(b_best);
 
-  Board b_current = b_best;
-  int E_current = E_best;
+  // Initialize board
+  Board b = generateBoard(n, queenPos);
+  const int E_begin = calculateFullE(b);
+  std::uniform_int_distribution<> nGen(0, n - 1);
 
-  std::set<Board> tabuList;
 
-  long iterationCount = 0;
+  // Stagnation detection variables
+  // stagnationInterval = max(⌊c_1 ⋅ n⌋, c_2) where c = constant
+  const int stagnationCheckInterval = static_cast<int>(floor(10 * n));
+  // Precompute stagnation check intervals
+  const int stagnationIntervalOne = static_cast<int>(std::floor(stagnationCheckInterval / 1.5));
+  const int stagnationIntervalTwo = static_cast<int>(std::floor(stagnationCheckInterval / 3.0));
+  const int lcmInterval = std::lcm(std::lcm(stagnationIntervalOne, stagnationIntervalTwo), stagnationCheckInterval);
+  // Initialize stagnation check sample variables
+  int stagnationSampleOne = E_begin;
+  int stagnationSampleTwo = stagnationSampleOne;
+  int stagnationSampleThree = stagnationSampleOne;
 
-  // Annealing variables
-  double T = 100*n; // Temperature T, controls likelyhood of worse solutions being accepted.
-  constexpr double alpha = 0.95; // Cooling rate α, rate of cooling of T each iteration.
-  constexpr double T_min = 0.00; // T_min, annealing will stop when reaching this temperature.
-  const long iteration_max = 10 * pow(2, n) * log(n); // IterationMax = ?, annealing failed when reached.
 
-  while (T > T_min) {
-
-    if (iterationCount > iteration_max) {
-      // No valid solution has been found
-      return std::vector<int>{};
-    }
-
-    Board b_neighbor = generateNeighbor(b_current, queenPos);
-    const int E_neighbor = calculateE(b_neighbor);
-
-    const int deltaE = E_neighbor - E_current; // ΔE = E_current - E_neighbor
-
-    // ΔE is negative ⟹ solution is better.
-    // ΔE is positive ⟹ compute probability of accepting worse solution based on temperature
-    // Probability = e^(-ΔE/T) > x, x ∈ [0; 1]
-    if (deltaE < 0 || exp(-deltaE / T) > randZeroOne(gen)) {
-      b_current = b_neighbor;
-      E_current = E_neighbor;
-
-      // If there are less conflicts compared to the best solution, new best found
-      if (E_current < E_best) {
-        b_best = b_current;
-        E_best = E_current;
-      }
-
-      // If best solution has zero energy, solution is correct. Stop annealing.
-      if (E_best == 0) {
-        // Solution found
-        std::cout << "max = " << iteration_max << std::endl;
-        std::cout << "iteration = " << iterationCount << std::endl;
-        std::cout << "E_final = " << E_best << std::endl;
-        lastIterationCount = iterationCount;
-        return b_best;
-      }
-    }
-    T *= alpha; // Cool temperature
-
+  while (true) {
     iterationCount++;
-    std::cout << "E = " << E_best << std::endl;
-  }
-  std::cout << "E_final = " << E_best << std::endl;
+    int E_best = 0;
+    std::vector<int> highestConflictRows;
 
-  return b_best;
+    for (int i = 0; i < n; ++i) {
+      // If E_current > E_best, E_current is the new best
+      if (const int E_current = calculateE(b, i);
+        E_current > E_best) {
+        E_best = E_current;
+        // Clear highest conflict list since it's populated only by lower E's.
+        highestConflictRows.clear();
+        highestConflictRows.push_back(i);
+      } else if (E_current == E_best) {
+        // If E_current == E_best, add to list
+        highestConflictRows.push_back(i);
+      }
+    }
+
+    const int E_board = calculateFullE(b);
+    // std::cout << "E = " << E_board << std::endl;
+
+    // Check if solution satisfies constraints
+    if (E_best == 0) {
+      // done
+      std::cout << "Finished at iteration " << iterationCount << std::endl;
+      std::cout << "E_begin = " << E_begin << std::endl << "lcm = " << lcmInterval << std::endl;
+      return b;
+    }
+
+
+    // Take samples for stagnation check
+    if (iterationCount % stagnationIntervalOne == 0) {
+      stagnationSampleTwo = E_board;
+    }
+    if (iterationCount % stagnationIntervalTwo == 0) {
+      stagnationSampleThree = E_board;
+    }
+
+    // Check stagnation every max(⌊c_1 ⋅ n⌋, c_2) iterations to combat local minima
+    if (iterationCount % stagnationCheckInterval == 0) {
+      std::cout << "Stagnation check: " << std::endl
+          << "Current iteration = " << iterationCount << std::endl
+          << "E = " << E_board << std::endl;
+      // std::cout << "stagnationCheckInterval = " << stagnationCheckInterval << "\n"
+      //     << "stagnationIntervalOne = " << stagnationIntervalOne << "\n"
+      //     << "stagnationIntervalTwo = " << stagnationIntervalTwo << "\n"
+      //     << "stagnationSampleOne = " << stagnationSampleOne << "\n"
+      //     << "stagnationSampleTwo = " << stagnationSampleTwo << "\n"
+      //     << "stagnationSampleThree = " << stagnationSampleThree << "\n"
+      //     << "stagnationCount = " << stagnationCount << "\n"
+      //     << "E_begin = " << E_begin << std::endl;
+
+      // if all samples are equal
+      if (stagnationSampleOne == stagnationSampleTwo &&
+        stagnationSampleOne == stagnationSampleThree &&
+        stagnationSampleOne == E_board) {
+        // Stagnation detected.
+        stagnationCount++;
+        std::cout << "Stagnation count = " << stagnationCount << std::endl;
+
+        // Attempt to escape local minima by perturbing the board
+        // Perturbation amount calculated using modified variant of simulated annealing.
+        // Perturbation = ⌈min_perbutation + (E_current / E_begin) * (max_perbutation - min_perbutation)⌉
+        // Perturbation = ⌈n/8 + (E_board / E_begin) * (n/3.5 - n/8)⌉
+        // Ceil so that Perturbation < 1 will always result in at least one change
+        for (int i = 0; i < ceil(n / 8.0 + (static_cast<double>(E_board) / E_begin) * (n / 2 - n / 8.0)); ++i) {
+          const int row = nGen(gen);
+          // Ignore manditory queen row
+          if (row == queenPos.second) {
+            continue;
+          }
+          // perturbation
+          b[row] = nGen(gen);
+        }
+      }
+      // take new sampleOne for next stagnation check
+      stagnationSampleOne = E_board;
+    }
+
+
+    std::uniform_int_distribution<> conflictGen(0, static_cast<int>(highestConflictRows.size()) - 1);
+
+    if (const int row = highestConflictRows[conflictGen(gen)]; row == queenPos.second) {
+      b[row] = queenPos.first;
+    } else {
+      b[row] = nGen(gen);
+    }
+  }
+  // Unreachable but I like it so it can stay
+  return b;
+}
+
+void printBoard(const Board& b) {
+  std::string res;
+  const int n = static_cast<int>(b.size());
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (b[j] == i) {
+        res += "Q ";
+        continue;
+      }
+      res += ". ";
+    }
+    res += "\n";
+  }
+  std::cout << res << std::endl;
 }
 
 
-std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
-  const Board b = simulatedAnnealing(n, mandatoryQueenCoordinates);
+std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
   std::string res;
+
+  // Base cases
+  if (n == 1) {
+    // Trivial solution
+    return "Q";
+  } else if (n < 4) {
+    // No solution
+    return res;
+  }
+
+  const Board b = minConflicts(n, mandatoryQueenCoordinates);
 
   if (b.empty()) {
     return res;
@@ -172,42 +284,51 @@ std::string solveNQueens(int n, std::pair<int, int> mandatoryQueenCoordinates) {
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
       if (b[j] == i) {
-        res += 'Q';
+        res += "Q ";
         continue;
       }
-      res += '.';
+      res += ". ";
     }
     res += "\n";
   }
   return res;
 }
 
-
-void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, int epochs) {
-  long total = 0;
+void measurePerformance(const int n, const std::pair<int, int>& mandatoryQueenCoordinates, const int epochs) {
   int i;
   // Start time
   const auto start = std::chrono::high_resolution_clock::now();
-  for (i = 0; i < epochs+1; ++i) {
+  for (i = 0; i < epochs; ++i) {
     solveNQueens(n, mandatoryQueenCoordinates);
-    total += lastIterationCount;
   }
   // End time
   const auto end = std::chrono::high_resolution_clock::now();
   // Calculate duration in milliseconds
   const std::chrono::duration<double, std::milli> duration = end - start;
-
-  std::cout << "Iterations on average (n = " << n << ", " << epochs << " epochs) = " << total/i << std::endl;
-  std::cout << "Time elapsed: " << duration.count() << " ms" << std::endl;
-
+  std::cout
+      << "Test suite results:\n"
+      << "\tTest settings: n = " << n << ", " << epochs << " epochs\n"
+      << "\tIterations (avg) \t: " << iterationCount / i << "\n"
+      << "\tStagnations total \t: " << stagnationCount << "\n"
+      << "\tStagnations (avg) \t: " << stagnationCount / i << "\n"
+      << "\tTime elapsed \t\t: " << duration.count() << " ms\n"
+      << "\tTime (avg)   \t\t: " << (double) (duration.count() / (double) epochs) << " ms\n" << std::endl;
 }
 }
-
 
 int main() {
   using namespace nQueens;
-  measurePerformance(200, {0, 1}, 10);
+  constexpr int n = 200;
 
-  // std::cout << solveNQueens(100, {0, 1});
+  // Board b = minConflicts(n, {0, 1});
+  // for (int i = 0; i < n; ++i) {
+  //   std::cout << calculateE(b, i) << " ";
+  // }
+  // std::cout << std::endl;
+  // printBoard(b);
+
+  measurePerformance(n, {0, 3}, 10);
+
+  // std::cout << solveNQueens(n, {0, 3});
   return 0;
 }

@@ -8,14 +8,12 @@ set(SANITIZER_FLAGS "-fsanitize=address,undefined")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SANITIZER_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
 
-add_executable(RGB_to_hex_conversion src/CodeWars/RGB_to_hex_conversion/main.cpp
-        src/utils/ArrayUtils.cpp
-        src/CodeWars/n-Queens/SimulatedAnnealing/main.cpp
-        src/CodeWars/n-Queens/MinConflicts/main.cpp
-)
+add_executable(RGB_to_hex_conversion src/CodeWars/RGB_to_hex_conversion/main.cpp)
 
 add_executable(Snail_sort src/CodeWars/Snail_sort/main.cpp)
 
 add_executable(n-Queens_SA src/CodeWars/n-Queens/SimulatedAnnealing/main.cpp)
+
+add_executable(n-Queens_SA_new src/CodeWars/n-Queens/SimulatedAnnealing/temp.cpp)
 
 add_executable(n-Queens_MC src/CodeWars/n-Queens/MinConflicts/main.cpp)
