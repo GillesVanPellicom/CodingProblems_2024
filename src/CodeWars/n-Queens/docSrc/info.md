@@ -275,7 +275,7 @@ Mandatory queens are now correctly implemented.
 
 ##### Base cases
 
-The only thing to left to take into account are the base cases. ases in which the algorithm is not applicable or cannot be used in order to determine the result based on the given arguments.
+The only thing left to take into account are the base cases. Cases in which the algorithm is not applicable or cannot be used in order to determine the result based on the given arguments.
 
 - $n = 1$: Trivial solution. Simply one queen in the one free cell.
 - $\{ n \mid n < 4 \land n \neq 1 \}$: No solutions possible.
