@@ -164,7 +164,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
           E_current++;
         }
       }
-      // Sum all row' E to avoid having to re-calculate when board total is needed
+      // Sum all rows E to avoid having to re-calculate when board total is needed
       E_total += E_current;
 
       // If E_current > E_best, E_current is the new best
@@ -267,6 +267,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 }
 
 
+
 std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
   std::string res;
 
@@ -314,7 +315,7 @@ int main() {
   // std::cout << std::endl << ". . . . Q .\n. . Q . . .\nQ . . . . .\n. . . . . Q\n. . . Q . .\n. Q . . . .\n";
   // measurePerformance(n, {2, 1}, 10);
 
-  std::string res = solveNQueens(n, {5, 5});
+  const std::string res = solveNQueens(n, {5, 5});
   std::cout << res << std::endl;
   return 0;
 }

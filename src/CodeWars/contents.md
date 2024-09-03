@@ -4,7 +4,7 @@
 CodeWars uses a japanese-style difficulty system where 8 kyu is easiest and 1 kyu is hardest.
 8-7 kyu is novice level, 6-5 is beginner, 4-3 is competent and 2-1 means proficient. You can also click the title of this section for more information.
 | **Kyu** | **Difficulty**   |
-|---------|------------------|
+| ------- | ---------------- |
 | Kyu 8   | Trivial          |
 | Kyu 7   | Very Easy        |
 | Kyu 6   | Easy             |
@@ -24,3 +24,6 @@ In the folder for that problem you will find a file named ```info.md```. This fi
 
 ### [Snail sort](https://www.codewars.com/kata/521c2db8ddc89b9b7a0000c1/cpp)
 ###### Site Difficulty: 4 kyu / Perceived difficulty: Easy
+
+### [n-Queens](https://www.codewars.com/kata/521c2db8ddc89b9b7a0000c1/cpp)
+###### Site Difficulty: 1 kyu / Perceived difficulty: Very Hard
