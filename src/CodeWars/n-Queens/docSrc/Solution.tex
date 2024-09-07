@@ -11,13 +11,12 @@
 \usepackage{xcolor}
 \usepackage{bbm}
 \usepackage{url}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
 \usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
 
 % codeblock styling
 \lstset{
-    basicstyle=\ttfamily, 
+    basicstyle=\ttfamily\small, 
     keywordstyle=\color{black}, 
     commentstyle=\color{black},
     stringstyle=\color{black}, 
@@ -50,25 +49,41 @@
     \setlength{\parindent}{0pt}
     \setlength{\parskip}{1em}
     The n-Queens problem tasks us with placing \(n\) queens on an \(n \times n\) chessboard such that no two queens attack each other.
-    This includes ensuring no queens share the same row, column, diagonal or anti-diagonal. Additionally, to make this version of the problem more challanging,
+    This includes ensuring no queens share the same row, column, diagonal or anti-diagonal. Additionally, to make this version of the problem more challenging,
     one queen's position is fixed.
-    The mandatory queen placement introduces challenges in certain cases, leading to unsolvable configurations, which are also handeled.
+    The mandatory queen placement introduces challenges in certain cases, leading to unsolvable configurations, which are also handled.
     This explanation explores different approaches to solving the n-Queens problem for varying board sizes up to \(n = 1000\).
 
     This explanation recognizes the broad scope of the material used and as such will include links to articles explaining specific concepts
-    each time they are initially mentioned. These links are embedded in the text for the digital version but can also be found in the references section on the last page if you are reading the printed version.
+    each time they are initially mentioned.
+    These links are embedded in the text for the digital version but can also be found in the references section on the last page if you are reading the printed version.
 \end{abstract}
 
+\clearpage
+
+% table of contents with black hyperlinks
+{
+    \hypersetup{linkcolor=black}
+    \tableofcontents
+}
+
+\clearpage
+
 \section{Introduction}
-This problem is classically used in computer science to teach beginners the concept of \href{https://en.wikipedia.org/wiki/Backtracking}{algorithmic backtracking}\textsuperscript{[1]}.
-Although this approach is quite intuitive, solving the problem this way carries a horribly bad \href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity}\textsuperscript{[2]} of \(O(n!)\).
+This problem is classically used in computer science to teach beginners the concept of
+\href{https://en.wikipedia.org/wiki/Backtracking}{algorithmic backtracking}\textsuperscript{[1]}.
+Although this approach is quite intuitive, solving the problem this way carries a horribly bad
+\href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity}\textsuperscript{[2]} of \(O(n!)\).
 This is acceptable for small \(n\), but since in this version of the problem \(0 \leq n \leq 1000\), this approach is not feasible.
+
 E.g. even for \(n = 20 \implies 20! = 2.432902 \times 10^{18}\) iterations.
 
-There are quite a few ways of optimizing backtracking for the n-Queens problem, such as \href{https://en.wikipedia.org/wiki/Decision_tree_pruning}{pruning}\textsuperscript{[3]},
-\href{https://en.wikipedia.org/wiki/Memoization}{memoization}\textsuperscript{[4]}, and \href{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}{symmetry reduction}\textsuperscript{[5]}.
-However, even with these optimizations, the average time complexity will still be a not very spectacular \(O(c^n)\) where \(c \approx [1.5; 2]\) and in the worst case
-\(O(n \cdot 2^n)\). Again, this makes large \(n\) infeasible.
+There are quite a few ways of optimizing backtracking for the n-Queens problem, such as
+\href{https://en.wikipedia.org/wiki/Decision_tree_pruning}{pruning}\textsuperscript{[3]},
+\href{https://en.wikipedia.org/wiki/Memoization}{memoization}\textsuperscript{[4]}, and
+\href{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}{symmetry reduction}\textsuperscript{[5]}.
+However, even with these optimizations, the average time complexity will still be a not very spectacular
+\(O(c^n)\) where \(c \approx [1.5; 2]\) and worst case \(O(n \cdot 2^n)\). Again, this makes large \(n\) infeasible.
 Because of these initial observations, I realised I required a different approach.
 
 \section{Attempt One: Simulated Annealing}
@@ -82,7 +97,7 @@ especially compared to a \href{https://en.wikipedia.org/wiki/Brute-force_attack}
 
 \subsection{Simulated Annealing, Generalised}
 Viewed at a high level, SA works as follows: The goal is to bring the system (in this case n-Queens), from an arbitrary initial state,
-to a perfect state with the minimum possible energy (conflicts) level.
+to a perfect state with the minimum possible energy level (conflicts).
 To utilise simulated annealing two main functions have to be defined:
 
 \begin{itemize}
@@ -97,7 +112,7 @@ This is done in order to the sufficiently traverse the solution space in the hop
 \subsubsection{Notation}
 
 \begin{itemize}
-    \item \(\boldsymbol{T}\): current temperature.
+    \item \(\boldsymbol{T}\): current temperature and initially starting temperature.
     \item \(\boldsymbol{T_{\mathbf{min}}}\): minimum temperature.
     \item \(\boldsymbol{\alpha}\): cooling factor.
     \item \(\boldsymbol{E_{\mathbf{current}}}\): current board energy.
@@ -111,22 +126,22 @@ Each iteration, \(T\) is multiplied by \(\alpha\), \(T \coloneqq T \cdot \alpha\
 to cool the temperature and lower the chances of accepting a worse neighbor as the algorithm gets closer to a solution. More specifically:
 
 \[
-    \text{If } \left(\Delta E < 0 \lor \exp\left(\frac{-\Delta E}{T}\right) > x \text{ such that } x \in [0, 1] \right)
+    \text{If } \left(\Delta E < 0 \lor \exp\left(\frac{-\Delta E}{T}\right) > x \text{ where } 0 \leq x \leq 1 \right)
 \]
 \[
     \text{Then accept the neighbor.}
 \]
 
-Where \( \exp(a) = e^a \), \( e \) is \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number}\textsuperscript{[13]},
-and \( x \) is randomized each iteration within given constraints.
+Where \( \exp(a) = e^a \), \( e \) is \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number}\textsuperscript{[13]}
+and \( x \) is randomized each iteration within given constraints. \((x \in \mathbb{R})\)
 
 To elaborate on the acceptance criteria, there are basically three paths leading to two outcomes:
 
 \begin{enumerate}
     \item \(\boldsymbol{\Delta E < 0}\). If the difference in energy is negative, the neighbor is better. Accept the neighbor.
-    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ such that } x \in [0, 1]}\)
-          If the first criterion is not met, calculate the chance this neighbor will be accepted based on the difference in energy,
-          the current temperature, and if that chance is greater than a randomly generated number \(x\) between \(0\) and \(1\) \((x \in \mathbb{R})\), accept the neighbor.
+    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ where } 0 \leq x \leq 1}\)
+          If the first criterion is not met, calculate the chance this neighbor will be accepted based on the difference in energy and
+          the current temperature. If that chance is greater than a randomly generated number \(x\) between \(0\) and \(1\), accept the neighbor.
     \item \textbf{If both criteria fail}, discard the neighbor.
 \end{enumerate}
 
@@ -143,6 +158,7 @@ This could be solved by implementing a stagnation detection and resolving algori
 The problem with doing this is that you have to define when something counts as stagnation,
 what actions to take when stagnation has been detected, how much action to take and when to take it.
 Meaning quite a few new variables which need adjusting would have to be introduced on top of the very sensitive annealing variables.
+
 These variables also can't be constant and have to be in function of \(n\).
 
 Profiling and solving this very delicate balancing act is a large time investment with no real guarantee of success in the end,
@@ -192,8 +208,8 @@ in order to fine-tune a sophisticated stagnation D/R (detection and resolution) 
 \end{itemize}
 
 \paragraph{Solution}
-To resolve stagnation, the computer first has to be able to detect stagnation, so stagnation has to be defined.
-I have defined it as "if three samples of the board's total energy, taken at specified points within $stagnationCheckInterval$,
+To resolve stagnation, the computer first has to be able to detect stagnation. Therefire stagnation has to be defined and I have defined it as such:
+"if three samples of the board's total energy, taken at specified points within $stagnationCheckInterval$,
 and the current total energy are all equal, the board has stagnated".
 
 The algorithm periodically takes energy samples of the entire board.
@@ -210,7 +226,7 @@ When dividing as with $S_2$ and $S_3$, the $floor()$ function is utilised so tha
 \newline $iterationCount$, which is $\mathbb{Z}^+$, don't consistently fail.
 
 By using tri-sampling instead of only one sample, the chance of false positives is lowered significantly.
-Also the fact that all samples have to match up perfectly without margin for error results in significantly less false positives.
+Also the fact that in this implementation all samples have to match up perfectly without margin for error results in significantly less false positives.
 I've found that when the algorithm is actually stuck energy fluctuations are bascially non-existent, therefore I'm able to get away with these strict requirements.
 
 Once detected, a stagnation is resolved by \href{https://en.wikipedia.org/wiki/Perturbation_theory}{perturbation}\textsuperscript{[16]}.
@@ -220,12 +236,12 @@ in an attempt to escape local minima.
 The perturbation amount must be defined in function of $n$, since using a constant wouldn't scale.
 This could be defined as something static such as $\frac{n}{4}$,
 This way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
-since you now have higher chances of wasting a carefully calculated correct queen placement each perturbation.
+since you now have higher chances of wasting multiple carefully calculated correct queen placements each perturbation.
 
-My method of resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
-Instead of using temperature,
-this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem. The closer the current board energy is to the start,
-the more agressive the algorithm is. By being more gentle toward the end, there is much less chance of loosing a good board setup and having to start over.
+My method for resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
+Instead of using temperature, this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem.
+The closer the current board energy is to the start, the more agressive the algorithm is. By being more gentle toward the end,
+there is much less chance of loosing a good board setup and having to start over.
 
 \[
     p = \left\lceil p_{min}+\frac{E_{current}}{E_{begin}} \left(p_{max} - p_{min}\right)\right\rceil
@@ -249,6 +265,14 @@ In practice the following numbers were used:
 This way, even when $E\to0$, a positive stagnation check will result in at least one perturbation, and at most $\frac{n}{10}$ perturbations.
 Making too many alterations, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed.
 Local minima in later stages can be escaped by smaller, non-overzealous perturbations.
+
+Following is the C++ implementation of this formula:
+
+\begin{lstlisting}
+    for (int i = 0; i < ceil(1.0 + (static_cast<double>(E_board) / E_begin) * (n / 10.0 - 1)); ++i) {
+        // perform perturbation
+    }
+\end{lstlisting}
 
 \subsubsection{Critical Issue 2: Initial Convergence}
 The second large problem is initial convergence. In other words going from the initial energy of the arbitrary starting board (e.g. $E=1800$)
@@ -280,10 +304,11 @@ how many other queens she can attack from her current position. How a queen can 
 
 To compute E, the following methods were utilised:
 
+\clearpage
 \subsubsection{Line Indexing}
 In a matrix (such as a chessboard), each diagonal, anti-diagonal, horizontal, and vertical line can be given an index, which could be seen as a name of sorts.
 
-E.g., following is a table constructed using the formula $i = x-y$ to illustrate the concept of indexed diagonals:
+E.g. following is a table constructed using the formula $i = x-y$ to illustrate the concept of indexed diagonals:
 
 \[
     \begin{array}{c|cccccccc}
@@ -312,7 +337,7 @@ The datatype to represent the board is defined as follows:
 using Board = std::vector<int>;
 \end{lstlisting}
 
-This c++ code defines a list of integers as a new datatype named "\texttt{Board}".
+This C++ code defines a list of integers as a new datatype named "\texttt{Board}".
 
 This way, the index of the array represents the row, and the value represents the column.
 Limiting a queen's movements to one column also significantly improves the chances of a change being productive.
@@ -326,7 +351,8 @@ A conflict is defined as:
 \]
 Where $b = \texttt{Board}$ (zero-indexed) and $[ ]$, indexing operator.
 
-Using this definition, a formula to compute the board's total energy can be constructed:
+\clearpage
+Using the definition of a conflict, a formula to compute the board's total energy can be constructed:
 
 \[
     E_{board} = \sum_{x=0}^{n-1} \sum_{y=x+1}^{n-1} \left[ (b[x] = b[y]) \lor \left( \left| b[x] - b[y] \right| = \left| x - y \right| \right) \right]
@@ -336,7 +362,27 @@ This formula iterates over all pairs $(x, y)$ where $x, y \in \mathbb{Z}^+$, $x 
 If this pair satisfies one of the constraints, $E$ is incremented by one.
 Per pair, one and only one constraint can be satisfied at a time, so there is no loss in accuracy by compressing all constraints into one large constraint.
 
-\subsection{Final Phase}
+Following is the C++ implementation of the energy formulae:
+
+\begin{lstlisting}
+  inline int calculateBoardE(const Board& b) {
+  const int n = static_cast<int>(b.size())-1; // Get board size (n)
+  int E = 0; // start with E := 0
+  for (int i = 0; i < n; ++i) {
+    // Dont count i == j
+    for (int j = i + 1; j < n; ++j) {
+      // if (not in same col) or (not in same diagonal)
+      // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
+      if (b[i] == b[j] || std::abs(b[i] - b[j]) == std::abs(i - j)) {
+        ++E; // increment E
+      }
+    }
+  }
+  return E;
+}
+\end{lstlisting}
+
+\subsection{Final Constraints}
 Since the algorithm was now capable of efficiently calculating n-Queens with large $n$ in a timely manner,
 there were a few more constraints to be handeled order to comply with the problem definition.
 
@@ -349,6 +395,7 @@ Base cases are cases in which the algorithm is not applicable or cannot be used 
     \item $\boldsymbol{\{ n \in \mathbbm{Z}^{+} \mid n < 4 \land n \neq 1\}}$: No solutions possible. Handle by always returning failiure.
 \end{itemize}
 
+\clearpage
 \subsubsection{Mandatory Queen}
 The problem definition specifies an argument:
 
@@ -356,7 +403,7 @@ The problem definition specifies an argument:
 std::pair<int mandatoryRow, int mandatoryColumn>
 \end{lstlisting}
 
-This c++ code can be translated as: "a pair $(x, y)$ which specifies the location for a queen which must be present in the final solution."
+This C++ code can be translated as: "a pair $(x, y)$ which specifies the location for a queen which must be present in the final solution."
 This is mostly there to increase the difficulty of the problem, as it introduces new challenges and considerations.
 
 To implement this, one can simply modify \texttt{gan-init()} to place the mandatory queen as the first queen and then construct the initial board around that queen.
@@ -367,13 +414,13 @@ you can have queen placements that block all possible solutions. These so-called
 In other words, they must be detected and the appropriate response for "invalid" has to be returned.
 
 For example, there are only two valid configurations for \(n = 4\):
-
 \begin{center}
     \begin{minipage}{0.45\textwidth}
         \centering
         \[
             \textbf{Solution 1:}
         \]
+        \renewcommand{\arraystretch}{2}
         \begin{tabular}{|c|c|c|c|}
             \hline
                                       &                           & $\mathbf{Q}_{\mathbf{3}}$ &                           \\
@@ -385,6 +432,7 @@ For example, there are only two valid configurations for \(n = 4\):
                                       & $\mathbf{Q}_{\mathbf{2}}$ &                           &                           \\
             \hline
         \end{tabular}
+        \renewcommand{\arraystretch}{1} % Reset to default value
 
         \[
             [(0, 1), (1, 3), (2, 0), (3, 2)]
@@ -396,6 +444,7 @@ For example, there are only two valid configurations for \(n = 4\):
         \[
             \textbf{Solution 2:}
         \]
+        \renewcommand{\arraystretch}{2}
         \begin{tabular}{|c|c|c|c|}
             \hline
                                       & $\mathbf{Q}_{\mathbf{2}}$ &                           &                           \\
@@ -407,6 +456,7 @@ For example, there are only two valid configurations for \(n = 4\):
                                       &                           & $\mathbf{Q}_{\mathbf{3}}$ &                           \\
             \hline
         \end{tabular}
+        \renewcommand{\arraystretch}{1} % Reset to default value
 
         \[
             [(0, 2), (1, 0), (2, 3), (3, 1)]
@@ -414,7 +464,8 @@ For example, there are only two valid configurations for \(n = 4\):
     \end{minipage}
 \end{center}
 
-If a mandatory queen position does not match any of these positions, that queen will block any possible solution and the appropriate response has to be returned.
+If a mandatory queen position does not match any of these positions, that queen will block any possible solution.
+Thus, the appropriate response for "invalid" has to be returned.
 
 The best way to detect if any given input is valid is by examining the \(iterationCount\).
 Due to earlier test-suite results, the average number of iterations for any given \(n\) is known.
@@ -422,9 +473,10 @@ Thus, it is only a matter of introducing a stopping mechanism whenever the algor
 plus some extra margin to minimize false negatives in case of very bad luck.
 
 \subsection{Conclusion}
-Altough pure min-conflicts isn't able to handle this problem, by implementing the modifications and solutions outlined above,
-this method is very efficient at computing the n-Queens problem
+Although pure min-conflicts isn't able to handle this problem, by implementing the modifications and solutions outlined above,
+this method is very efficient at computing the n-Queens problem.
 
+\clearpage
 \section{Personal Notes}
 I imposed the constraint on myself to solve this problem only with general methods for CSP's,
 without looking at whitepapers outlining custom n-Queens solving algorithms. This to force
@@ -436,6 +488,7 @@ This problem wasn't easy in the slightest but I managed to get it in the end and
 In case you are viewing a printed version of this document and cannot click on the embedded links, the URLs are provided below for manual entry:
 
 \sloppy
+
 \begin{enumerate}
     \item Algorithmic backtracking: \url{https://en.wikipedia.org/wiki/Backtracking}
     \item Time complexity: \url{https://en.wikipedia.org/wiki/Time_complexity}
