@@ -328,6 +328,9 @@ Where $b = \texttt{Board}$ (zero-indexed) and $[ ]$, indexing operator.
 
 Using this definition, a formula to compute the board's total energy can be constructed:
 
+\[
+    E_{board} = \sum_{x=0}^{n-1} \sum_{y=x+1}^{n-1} \left[ (b[x] = b[y]) \lor \left( \left| b[x] - b[y] \right| = \left| x - y \right| \right) \right]
+\]
 
 This formula iterates over all pairs $(x, y)$ where $x, y \in \mathbb{Z}^+$, $x \leq n \land y \leq n$.
 If this pair satisfies one of the constraints, $E$ is incremented by one.
