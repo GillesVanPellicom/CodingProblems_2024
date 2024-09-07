@@ -1,1 +1,4 @@
 /cmake-build-debug/
+
+**/docSrc/*
+!**/docSrc/solution.tex
