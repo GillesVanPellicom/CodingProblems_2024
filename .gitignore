@@ -2,3 +2,6 @@
 
 **/docSrc/*
 !**/docSrc/solution.tex
+
+.DS_Store
+**/.DS_Store
