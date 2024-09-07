@@ -1,14 +1,7 @@
 \documentclass{article}
 
-% Language setting
-% Replace `english' with e.g. `spanish' to change the document language
+% packages
 \usepackage[english]{babel}
-
-% Set page size and margins
-% Replace `letterpaper' with `a4paper' for UK/EU standard size
-\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
-% Useful packages
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -17,19 +10,23 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{bbm}
+\usepackage{url}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
+
+% codeblock styling
 \lstset{
-    basicstyle=\ttfamily, % sets the font for code
-    keywordstyle=\color{black}, % keywords in blue
-    commentstyle=\color{black}, % comments in green
-    stringstyle=\color{black}, % strings in red
-    numbers=left, % line numbers on the left
-    numberstyle=\tiny\color{black}, % style for line numbers
-    stepnumber=1, % show every line
-    frame=none, % put a frame around the code
-    breaklines=true, % allow line breaking
-    language=C++ % specify language (C++, Python, etc.)
+    basicstyle=\ttfamily, 
+    keywordstyle=\color{black}, 
+    commentstyle=\color{black},
+    stringstyle=\color{black}, 
+    numbers=left, 
+    numberstyle=\tiny\color{black},
+    stepnumber=1,
+    frame=none, 
+    breaklines=true, 
+    language=C++
 }
 
 % paragraph styling
@@ -47,7 +44,6 @@
 
 \begin{document}
 
-
 \maketitle
 
 \begin{abstract}
@@ -60,27 +56,29 @@
     This explanation explores different approaches to solving the n-Queens problem for varying board sizes up to \(n = 1000\).
 
     This explanation recognizes the broad scope of the material used and as such will include links to articles explaining specific concepts
-    each time they are initially mentioned. These links are embedded and so can only be opened when viewing the digital version of this document.
+    each time they are initially mentioned. These links are embedded in the text for the digital version but can also be found in the references section on the last page if you are reading the printed version.
 \end{abstract}
 
 \section{Introduction}
-This problem is classically used in computer science to teach beginners the concept of \href{https://en.wikipedia.org/wiki/Backtracking}{algorithmic backtracking}.
-Although this approach is quite intuitive, solving the problem this way carries a horribly bad \href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity} of \(O(n!)\).
+This problem is classically used in computer science to teach beginners the concept of \href{https://en.wikipedia.org/wiki/Backtracking}{algorithmic backtracking}\textsuperscript{[1]}.
+Although this approach is quite intuitive, solving the problem this way carries a horribly bad \href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity}\textsuperscript{[2]} of \(O(n!)\).
 This is acceptable for small \(n\), but since in this version of the problem \(0 \leq n \leq 1000\), this approach is not feasible.
 E.g. even for \(n = 20 \implies 20! = 2.432902 \times 10^{18}\) iterations.
 
-There are quite a few ways of optimizing backtracking for the n-Queens problem, such as \href{https://en.wikipedia.org/wiki/Decision_tree_pruning}{pruning},
-\href{https://en.wikipedia.org/wiki/Memoization}{memoization}, and \href{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}{symmetry reduction}.
+There are quite a few ways of optimizing backtracking for the n-Queens problem, such as \href{https://en.wikipedia.org/wiki/Decision_tree_pruning}{pruning}\textsuperscript{[3]},
+\href{https://en.wikipedia.org/wiki/Memoization}{memoization}\textsuperscript{[4]}, and \href{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}{symmetry reduction}\textsuperscript{[5]}.
 However, even with these optimizations, the average time complexity will still be a not very spectacular \(O(c^n)\) where \(c \approx [1.5; 2]\) and in the worst case
 \(O(n \cdot 2^n)\). Again, this makes large \(n\) infeasible.
 Because of these initial observations, I realised I required a different approach.
 
-\section{Attempt one: Simulated Annealing}
-\href{https://en.wikipedia.org/wiki/Randomized_algorithm}{Simulated Annealing} (SA) is a \href{https://en.wikipedia.org/wiki/Metaheuristic}{metaheuristic} technique inspired by
-\href{https://en.wikipedia.org/wiki/Metallurgy#:~:text=Metallurgy%20is%20a%20domain%20of,which%20are%20known%20as%20alloys.}{metallurgy} where controlled 
-\href{https://en.wikipedia.org/wiki/Entropy}{entropy} is utilised to selectively temper out defects and converge to an optimal solution. For a given
-\href{https://en.wikipedia.org/wiki/Constraint_satisfaction_problem}{CSP}, such as in this case the n-Queens problem, SA is able to relatively quickly converge,
-especially compared to a \href{https://en.wikipedia.org/wiki/Brute-force_attack}{brute-force} approach.
+\section{Attempt One: Simulated Annealing}
+\href{https://en.wikipedia.org/wiki/Simulated_annealing}{Simulated annealing}\textsuperscript{[6]} (SA) is an example of a
+\href{https://en.wikipedia.org/wiki/Randomized_algorithm}{randomized algorithm}\textsuperscript{[7]}.
+SA is a \href{https://en.wikipedia.org/wiki/Metaheuristic}{metaheuristic}\textsuperscript{[8]} technique inspired by
+\href{https://en.wikipedia.org/wiki/Metallurgy#:~:text=Metallurgy%20is%20a%20domain%20of,which%20are%20known%20as%20alloys.}{metallurgy}\textsuperscript{[9]} where controlled 
+\href{https://en.wikipedia.org/wiki/Entropy}{entropy}\textsuperscript{[10]} is utilised to selectively temper out defects and converge to an optimal solution. For a given
+\href{https://en.wikipedia.org/wiki/Constraint_satisfaction_problem}{CSP}\textsuperscript{[11]}, such as in this case the n-Queens problem, SA is able to relatively quickly converge,
+especially compared to a \href{https://en.wikipedia.org/wiki/Brute-force_attack}{brute-force}\textsuperscript{[12]} approach.
 
 \subsection{Simulated Annealing, Generalised}
 Viewed at a high level, SA works as follows: The goal is to bring the system (in this case n-Queens), from an arbitrary initial state,
@@ -94,7 +92,7 @@ To utilise simulated annealing two main functions have to be defined:
 
 The algorithm starts with a specific temperature, which cools by a specified factor each iteration.
 The temperature controls the likelihood of a counter-productive neighbor being accepted.
-This is done so that the solution space is sufficiently traversed in the hopes of arriving at an optimal solution.
+This is done in order to the sufficiently traverse the solution space in the hopes of quickly arriving at an optimal solution.
 
 \subsubsection{Notation}
 
@@ -119,7 +117,7 @@ to cool the temperature and lower the chances of accepting a worse neighbor as t
     \text{Then accept the neighbor.}
 \]
 
-Where \( \exp(a) = e^a \), \( e \) is \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number},
+Where \( \exp(a) = e^a \), \( e \) is \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number}\textsuperscript{[13]},
 and \( x \) is randomized each iteration within given constraints.
 
 To elaborate on the acceptance criteria, there are basically three paths leading to two outcomes:
@@ -138,7 +136,7 @@ Unfortunately there are two main glaring issues with using simulated annealing f
 \subsubsection{Critical Issue 1: Stagnation}
 SA has the tendancy to stagnate (get stuck in local minima). Meaning it gets stuck on almost-but-not-really optimal solutions,
 usually within a \(2-3\%\) range of an optimal \(E = 0\) solution.
-This is acceptable for some problems such as the \href{https://en.wikipedia.org/wiki/Travelling_salesman_problem}{travellign salesman problem},
+This is acceptable for some problems such as the \href{https://en.wikipedia.org/wiki/Travelling_salesman_problem}{Travelling Salesman Problem}\textsuperscript{[14]},
 where complete accuracy isn't a requirement for the solution to be practical, but that isn't the case for n-Queens.
 
 This could be solved by implementing a stagnation detection and resolving algorithm.
@@ -160,10 +158,10 @@ The amount of time required to fully converge gets very steep as \(n \to 1000\).
 Because of the two major issues stated above, SA was deemed to be a poor fit for this particular problem.
 
 However, the concept of dynamically adjusting agressiveness of action based on how close
-to a solution the algorithm currently is was implemented in my final solution.
+to a solution the algorithm currently is, was implemented in my final solution.
 
-\section{Attempt one: Simulated Annealing}
-\href{https://en.wikipedia.org/wiki/Min-conflicts_algorithm}{Min-conflicts}
+\section{Attempt Two: Min-Conflicts}
+\href{https://en.wikipedia.org/wiki/Min-conflicts_algorithm}{Min-conflicts}\textsuperscript{[15]}
 is a heuristics-based search algorithm which shines in quickly converging from a semi-high energy state to a perfect state (\(E = 0\)).
 
 The algorithm creates a list of all queens with the very highest \(E\) values (most conflicts),
@@ -175,18 +173,22 @@ This approach is much more efficient and simpler for this particular problem com
 
 \subsection{Critical Issues}
 Even though this approach should be much better suited to this problem, there are still issues.
+
 \subsubsection{Critical Issue 1: Stagnation}
-As with SA, stagnation is a big issue. Especially with small \(n<10\), where this algorithm has a tendancy to take tens of minutes over something which could conceivably be calculated in a few milliseconds.
+As with SA, stagnation is a big issue. Especially with small \(n<10\), where this algorithm has a tendancy to take tens of minutes
+over something which could conceivably be calculated in a few milliseconds.
 The algorithm stagnates about 50\% of the time for small \(n\).
 Min-conflicts doesn't have very sensitive variables as with SA,
-so I felt much more comfortable putting in the time of running test-suites to find the optimal formulae to calculate the variables in order to fine-tune a sophisticated stagnation D/R (detection and resolution) system.
+so I felt much more comfortable putting in the time of running test-suites to find the optimal formulae to calculate the variables
+in order to fine-tune a sophisticated stagnation D/R (detection and resolution) system.
 
 \paragraph{Notation}
 \begin{itemize}
 
     \item \(iterationCount\): amount of times the algorithm has looped.
     \item \(stagnationCheckInterval\): amount of iterations between checks, calculated as \(10n\).
-          \((stagnationCheckInterval \in \mathbb{Z}^+)\). In other words, every \(iterationCount \equiv 0 \pmod{10n}\), stagnation D/R runs.
+          \newline \((stagnationCheckInterval \in \mathbb{Z}^+)\).
+          \newline In other words, every \(iterationCount \equiv 0 \pmod{10n}\), stagnation D/R runs.
 \end{itemize}
 
 \paragraph{Solution}
@@ -196,6 +198,7 @@ and the current total energy are all equal, the board has stagnated".
 
 The algorithm periodically takes energy samples of the entire board.
 Here are the criteria for when to take each sample:
+
 \begin{itemize}
 
     \item \(\mathbf{S_1}\): at \(stagnationCheckInterval\)
@@ -203,25 +206,25 @@ Here are the criteria for when to take each sample:
     \item \(\mathbf{S_3}\): at \( \left\lfloor \frac{stagnationCheckInterval}{3.0} \right\rfloor\)
 \end{itemize}
 
-When dividing as with $S_2$ and $S_3$, the $floor()$ function is utilised so that modulo checks with $iterationCount$, which is $\mathbb{Z}^+$,
-don't consistently fail.
+When dividing as with $S_2$ and $S_3$, the $floor()$ function is utilised so that modulo checks with
+\newline $iterationCount$, which is $\mathbb{Z}^+$, don't consistently fail.
 
 By using tri-sampling instead of only one sample, the chance of false positives is lowered significantly.
-This and the fact that all samples have to match up perfectly without margin for error makes it so there are significantly less false positives.
-I've found that when the algorithm is actually stuck energy fluctuations are bascially non-existent, so I'm able to get away with these strict requirements.
+Also the fact that all samples have to match up perfectly without margin for error results in significantly less false positives.
+I've found that when the algorithm is actually stuck energy fluctuations are bascially non-existent, therefore I'm able to get away with these strict requirements.
 
-Once detected, a stagnation is resolved by \href{https://en.wikipedia.org/wiki/Perturbation_theory}{perturbation}.
+Once detected, a stagnation is resolved by \href{https://en.wikipedia.org/wiki/Perturbation_theory}{perturbation}\textsuperscript{[16]}.
 In essence this means randomly making a pre-specified amount of moves not taking into account if the move is an overall benifit or detriment to the solution,
 in an attempt to escape local minima.
 
 The perturbation amount must be defined in function of $n$, since using a constant wouldn't scale.
 This could be defined as something static such as $\frac{n}{4}$,
-but this way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
+This way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
 since you now have higher chances of wasting a carefully calculated correct queen placement each perturbation.
 
 My method of resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
 Instead of using temperature,
-this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem where the closer the current board energy is to the start,
+this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem. The closer the current board energy is to the start,
 the more agressive the algorithm is. By being more gentle toward the end, there is much less chance of loosing a good board setup and having to start over.
 
 \[
@@ -229,6 +232,7 @@ the more agressive the algorithm is. By being more gentle toward the end, there 
 \]
 
 Where:
+
 \begin{itemize}
     \item $\mathbf{p}$: calculated amount of perturbations
     \item $\mathbf{p_{min}}$: minimum amount of perturbations
@@ -242,25 +246,23 @@ In practice the following numbers were used:
     p = \left\lceil 1+\frac{E_{current}}{E_{begin}} \left(\frac{n}{10} - 1\right)\right\rceil
 \]
 
-This way, even when $E\to0$, a positive stagnation check will result in a positive stagnation check will result in at least one perturbation, and at most $\frac{n}{10}$ perturbations.
-Making too many alterations, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed. Local minima in later stages can be escaped by smaller, non-overzealous perturbations.
-
-Since this algorithm makes such extensive use of $E$-values, this seems like a good time to explain how these are calculated.
-
+This way, even when $E\to0$, a positive stagnation check will result in at least one perturbation, and at most $\frac{n}{10}$ perturbations.
+Making too many alterations, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed.
+Local minima in later stages can be escaped by smaller, non-overzealous perturbations.
 
 \subsubsection{Critical Issue 2: Initial Convergence}
 The second large problem is initial convergence. In other words going from the initial energy of the arbitrary starting board (e.g. $E=1800$)
 to a lower energy which min-conflicts can comfortably work with (e.g. $E=100$).
 
 This isn't a big issue with smaller $n$ but as $n \to 1000$ this starts getting very time-consuming.
-Enough so that this algorithm is incapable of solving texttt{nQueens(1000)} withing the given time constraint of 160000 ms, making this a critical issue.
+Enough so that this algorithm is incapable of solving \texttt{nQueens(1000)} withing the given time constraint of 160000 ms, making this a critical issue.
 
 Although there are many possible solutions for this issue, after a large amount trial-and-error,
 I settled on altering the function which generated the starting layout arbitrarily to make use of a heuristic so that it creates
 a starting-board with energy-levels much closer to the eventual solution.
 
-The heuristic I selected to impelement is the \href{https://en.wikipedia.org/wiki/Greedy_algorithm}{greedy algorithm} heuristic.
-Basically by making locally-optimal choices, choiches which only serve to minimize energy at that moment and not globally,
+The heuristic which was selected to impelement is the \href{https://en.wikipedia.org/wiki/Greedy_algorithm}{greedy algorithm}\textsuperscript{[17]} heuristic.
+Basically by making locally-optimal choices, choices which only serve to minimize energy at that moment and not globally,
 the algorithm can place the queens such that the starting energy is much more managable.
 
 Implementation initially caused a spike in stagnations and average execution times since this approach eliminated any randomness
@@ -271,10 +273,10 @@ Since this function didn't seem to be named I've dubbed it "gan-init" (Greedy-Ra
 
 Gan-init exponentially improved average execution times causing me to mark this issue as solved.
 
-\subsection{On the computation of E}
+\subsection{On the Computation of E}
 The $E$-value or energy of a queen is the amount of conflicts that specific queen currently has with other queens, in other words,
 how many other queens she can attack from her current position. How a queen can attack is defined in
-\href{https://en.wikipedia.org/wiki/Queen_(chess)\#Placement\_and\_movement}{the rules of chess}.
+\href{https://en.wikipedia.org/wiki/Queen_(chess)\#Placement\_and\_movement}{the rules of chess}\textsuperscript{[18]}.
 
 To compute E, the following methods were utilised:
 
@@ -299,20 +301,22 @@ E.g., following is a table constructed using the formula $i = x-y$ to illustrate
 \]
 
 
-As seen above, diagonals can be indexed or "named" e.g., "$-1$" or "$3$".
+As seen above, diagonals can be indexed or "named" e.g. "$-1$" or "$3$".
 By using this concept, you can compute if any diagonals or horizontals are being shared relatively cheaply.
 
 \subsubsection{Datatype}
 Due to the nature of this problem, a valid solution means that there can be only one queen per row, so there is no need to represent the chessboard with an actual 2D-array.
-I've defined this datatype to represent the board:
+The datatype to represent the board is defined as follows:
 
 \begin{lstlisting}
 using Board = std::vector<int>;
 \end{lstlisting}
+
 This c++ code defines a list of integers as a new datatype named "\texttt{Board}".
 
 This way, the index of the array represents the row, and the value represents the column.
-Limiting a queen's movements to one column also significantly improves the chances of a change being positive, and this cuts the number of required comparisons per queen per iteration by a factor of $n$.
+Limiting a queen's movements to one column also significantly improves the chances of a change being productive.
+This cuts the number of required comparisons per queen per iteration by a factor of $n$.
 
 \subsubsection{Calculation}
 Using these insights, definitions and formulas can be constructed.
@@ -323,9 +327,7 @@ A conflict is defined as:
 Where $b = \texttt{Board}$ (zero-indexed) and $[ ]$, indexing operator.
 
 Using this definition, a formula to compute the board's total energy can be constructed:
-\[
-    E = \sum_{i=0}^{n-1} \sum_{j=i+1}^{n-1} \left[ ((b[x] = b[y]) \lor (|b[x] - b[y]| = |x - y|)) \right]
-\]
+
 
 This formula iterates over all pairs $(x, y)$ where $x, y \in \mathbb{Z}^+$, $x \leq n \land y \leq n$.
 If this pair satisfies one of the constraints, $E$ is incremented by one.
@@ -333,20 +335,25 @@ Per pair, one and only one constraint can be satisfied at a time, so there is no
 
 \subsection{Final Phase}
 Since the algorithm was now capable of efficiently calculating n-Queens with large $n$ in a timely manner,
-there were a few more constraints to which have to be added in order to comply with the problem definition.
+there were a few more constraints to be handeled order to comply with the problem definition.
 
 \subsubsection{Base Cases}
-The only thing left to take into account are the base cases.
-Cases in which the algorithm is not applicable or cannot be used in order to determine the result based on the given arguments.
+Base cases are cases in which the algorithm is not applicable or cannot be used in order to determine the result based on the given arguments.
 
 \begin{itemize}
-    \item $\boldsymbol{n = 1}$: Trivial solution. Only one location so only one queen possible. Only one queen so no possible attacks. Handle by always returning a queen in cell $(0, 0)$.
+    \item $\boldsymbol{n = 1}$: Trivial solution. Only one location so only one queen possible. Only one queen so no possible attacks.
+          Handle by always returning a queen in cell $(0, 0)$.
     \item $\boldsymbol{\{ n \in \mathbbm{Z}^{+} \mid n < 4 \land n \neq 1\}}$: No solutions possible. Handle by always returning failiure.
 \end{itemize}
 
 \subsubsection{Mandatory Queen}
-The problem definition specifies an argument \texttt{std::pair<int mandatoryRow, int mandatoryColumn>}.
-This c++ code can be translated as a pair $(x, y)$ which specifies the location for a queen which must be present in the final solution.
+The problem definition specifies an argument:
+
+\begin{lstlisting}
+std::pair<int mandatoryRow, int mandatoryColumn>
+\end{lstlisting}
+
+This c++ code can be translated as: "a pair $(x, y)$ which specifies the location for a queen which must be present in the final solution."
 This is mostly there to increase the difficulty of the problem, as it introduces new challenges and considerations.
 
 To implement this, one can simply modify \texttt{gan-init()} to place the mandatory queen as the first queen and then construct the initial board around that queen.
@@ -404,7 +411,6 @@ For example, there are only two valid configurations for \(n = 4\):
     \end{minipage}
 \end{center}
 
-
 If a mandatory queen position does not match any of these positions, that queen will block any possible solution and the appropriate response has to be returned.
 
 The best way to detect if any given input is valid is by examining the \(iterationCount\).
@@ -422,5 +428,30 @@ without looking at whitepapers outlining custom n-Queens solving algorithms. Thi
 myself to learn more universally applicable concepts.
 
 This problem wasn't easy in the slightest but I managed to get it in the end and I had some fun along the way.
+
+\section*{References}
+In case you are viewing a printed version of this document and cannot click on the embedded links, the URLs are provided below for manual entry:
+
+\sloppy
+\begin{enumerate}
+    \item Algorithmic backtracking: \url{https://en.wikipedia.org/wiki/Backtracking}
+    \item Time complexity: \url{https://en.wikipedia.org/wiki/Time_complexity}
+    \item Decision tree pruning: \url{https://en.wikipedia.org/wiki/Decision_tree_pruning}
+    \item Memoization: \url{https://en.wikipedia.org/wiki/Memoization}
+    \item Symmetry reduction: \url{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}
+    \item Simulated Annealing: \url{https://en.wikipedia.org/wiki/Simulated_annealing}
+    \item Randomized algorithm: \url{https://en.wikipedia.org/wiki/Randomized_algorithm}
+    \item Metaheuristic: \url{https://en.wikipedia.org/wiki/Metaheuristic}
+    \item Metallurgy: \url{https://en.wikipedia.org/wiki/Metallurgy}
+    \item Entropy: \url{https://en.wikipedia.org/wiki/Entropy}
+    \item Constraint Satisfaction Problem: \url{https://en.wikipedia.org/wiki/Constraint\_satisfaction\_problem}
+    \item Brute-force attack: \url{https://en.wikipedia.org/wiki/Brute-force_attack}
+    \item Euler's number: \url{https://en.wikipedia.org/wiki/E_(mathematical_constant)}
+    \item Travelling Salesman Problem: \url{https://en.wikipedia.org/wiki/Travelling_salesman_problem}
+    \item Min-Conflicts algorithm: \url{https://en.wikipedia.org/wiki/Min-conflicts_algorithm}
+    \item Perturbation: \url{https://en.wikipedia.org/wiki/Perturbation_theory}
+    \item Greedy algorithm: \url{https://en.wikipedia.org/wiki/Greedy_algorithm}
+    \item Queen movement rules: \url{https://en.wikipedia.org/wiki/Queen_(chess)\#Placement\_and\_movement}
+\end{enumerate}
 
 \end{document}
