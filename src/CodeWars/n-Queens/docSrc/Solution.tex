@@ -73,17 +73,17 @@
 This problem is classically used in computer science to teach beginners the concept of
 \href{https://en.wikipedia.org/wiki/Backtracking}{algorithmic backtracking}\textsuperscript{[1]}.
 Although this approach is quite intuitive, solving the problem this way carries a horribly bad
-\href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity}\textsuperscript{[2]} of \(O(n!)\).
+\href{https://en.wikipedia.org/wiki/Time_complexity}{time complexity}\textsuperscript{[2]} of \(\mathcal{O}(n!)\).
 This is acceptable for small \(n\), but since in this version of the problem \(0 \leq n \leq 1000\), this approach is not feasible.
 
-E.g. even for \(n = 20 \implies 20! = 2.432902 \times 10^{18}\) iterations.
+E.g. even for \(n = 20 \implies \mathcal{O}(20!) \approx 2.432902 \cdot 10^{18}\) iterations.
 
 There are quite a few ways of optimizing backtracking for the n-Queens problem, such as
 \href{https://en.wikipedia.org/wiki/Decision_tree_pruning}{pruning}\textsuperscript{[3]},
 \href{https://en.wikipedia.org/wiki/Memoization}{memoization}\textsuperscript{[4]}, and
 \href{https://www.khoury.northeastern.edu/home/wahl/Publications/ew05b.pdf}{symmetry reduction}\textsuperscript{[5]}.
 However, even with these optimizations, the average time complexity will still be a not very spectacular
-\(O(c^n)\) where \(c \approx [1.5; 2]\) and worst case \(O(n \cdot 2^n)\). Again, this makes large \(n\) infeasible.
+\(\mathcal{O}(c^n)\) where \(c \approx [1.5; 2]\) and worst case \(\mathcal{O}(n \cdot 2^n)\). Again, this makes large \(n\) infeasible.
 Because of these initial observations, I realised I required a different approach.
 
 \section{Attempt One: Simulated Annealing}
@@ -208,7 +208,7 @@ in order to fine-tune a sophisticated stagnation D/R (detection and resolution) 
 \end{itemize}
 
 \paragraph{Solution}
-To resolve stagnation, the computer first has to be able to detect stagnation. Therefire stagnation has to be defined and I have defined it as such:
+To resolve stagnation, the computer first has to be able to detect stagnation. For this purpose stagnation has to be defined, and I have defined it as such:
 "if three samples of the board's total energy, taken at specified points within $stagnationCheckInterval$,
 and the current total energy are all equal, the board has stagnated".
 
@@ -235,13 +235,13 @@ in an attempt to escape local minima.
 
 The perturbation amount must be defined in function of $n$, since using a constant wouldn't scale.
 This could be defined as something static such as $\frac{n}{4}$,
-This way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
+but this way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
 since you now have higher chances of wasting multiple carefully calculated correct queen placements each perturbation.
 
 My method for resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
 Instead of using temperature, this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem.
 The closer the current board energy is to the start, the more agressive the algorithm is. By being more gentle toward the end,
-there is much less chance of loosing a good board setup and having to start over.
+there is much less chance of losing a good board setup and having to start over.
 
 \[
     p = \left\lceil p_{min}+\frac{E_{current}}{E_{begin}} \left(p_{max} - p_{min}\right)\right\rceil
@@ -262,8 +262,9 @@ In practice the following numbers were used:
     p = \left\lceil 1+\frac{E_{current}}{E_{begin}} \left(\frac{n}{10} - 1\right)\right\rceil
 \]
 
-This way, even when $E\to0$, a positive stagnation check will result in at least one perturbation, and at most $\frac{n}{10}$ perturbations.
-Making too many alterations, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed.
+This way, even when $E\to0$, a positive stagnation check will result in at least one perturbation so that an attempt to solve the stagnation is always made,
+and at most $\frac{n}{10}$ perturbations.
+Making too many alterations to the board, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed.
 Local minima in later stages can be escaped by smaller, non-overzealous perturbations.
 
 Following is the C++ implementation of this formula:
@@ -285,7 +286,7 @@ Although there are many possible solutions for this issue, after a large amount 
 I settled on altering the function which generated the starting layout arbitrarily to make use of a heuristic so that it creates
 a starting-board with energy-levels much closer to the eventual solution.
 
-The heuristic which was selected to impelement is the \href{https://en.wikipedia.org/wiki/Greedy_algorithm}{greedy algorithm}\textsuperscript{[17]} heuristic.
+The heuristic which was selected to be impelemented is the \href{https://en.wikipedia.org/wiki/Greedy_algorithm}{greedy algorithm}\textsuperscript{[17]} heuristic.
 Basically by making locally-optimal choices, choices which only serve to minimize energy at that moment and not globally,
 the algorithm can place the queens such that the starting energy is much more managable.
 
@@ -347,18 +348,18 @@ This cuts the number of required comparisons per queen per iteration by a factor
 Using these insights, definitions and formulas can be constructed.
 A conflict is defined as:
 \[
-    conflict = (b[x] = b[y]) \lor (|b[x] - b[y]| = |x - y|)
+    conflict = \left(b[i] = b[j]\right) \lor \left( \left|b[i] - b[j]\right| = \left|i - j\right|\right)
 \]
-Where $b = \texttt{Board}$ (zero-indexed) and $[ ]$, indexing operator.
+Where $b = \texttt{Board}$ (zero-indexed) and $[$  $]$, indexing operator.
 
 \clearpage
 Using the definition of a conflict, a formula to compute the board's total energy can be constructed:
 
 \[
-    E_{board} = \sum_{x=0}^{n-1} \sum_{y=x+1}^{n-1} \left[ (b[x] = b[y]) \lor \left( \left| b[x] - b[y] \right| = \left| x - y \right| \right) \right]
+    E_{board} = \sum_{i=0}^{n-1} \sum_{j=i+1}^{n-1} \left[ (b[j] = b[i]) \lor \left( \left| b[i] - b[j] \right| = \left| i - j \right| \right) \right]
 \]
 
-This formula iterates over all pairs $(x, y)$ where $x, y \in \mathbb{Z}^+$, $x \leq n \land y \leq n$.
+This formula iterates over all pairs $(i, j)$ where $i, j \in \mathbb{Z}^+$, $i \leq n \land j \leq n$.
 If this pair satisfies one of the constraints, $E$ is incremented by one.
 Per pair, one and only one constraint can be satisfied at a time, so there is no loss in accuracy by compressing all constraints into one large constraint.
 
@@ -482,7 +483,7 @@ I imposed the constraint on myself to solve this problem only with general metho
 without looking at whitepapers outlining custom n-Queens solving algorithms. This to force
 myself to learn more universally applicable concepts.
 
-This problem wasn't easy in the slightest but I managed to get it in the end and I had some fun along the way.
+This problem wasn't easy in the slightest but I managed to get it in the and I got some entertainment out of it.
 
 \section*{References}
 In case you are viewing a printed version of this document and cannot click on the embedded links, the URLs are provided below for manual entry:
