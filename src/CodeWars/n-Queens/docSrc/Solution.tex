@@ -40,6 +40,7 @@
 % Preamble
 \title{Heuristic Approach for Efficiently Solving Large-Scale n-Queens Problems with a Pre-Specified Mandatory Queen}
 \author{Gilles Van pellicom}
+\date{8 September 2024}
 
 \begin{document}
 
@@ -101,8 +102,8 @@ to a perfect state with the minimum possible energy level (conflicts).
 To utilise simulated annealing two main functions have to be defined:
 
 \begin{itemize}
-    \item \textbf{Neighbor Function}: This function takes the current state of the board, makes a small random change, and returns the resulting state.
-    \item \textbf{Energy Function}: This function computes the energy of a given state, which in this context corresponds to the number of conflicts.
+    \item \textbf{Neighbor Function}: This function takes the current state of the system, makes a small and random change, and returns the resulting state which we call a neighbor.
+    \item \textbf{Energy Function}: This function computes the energy of a given state, which in this context corresponds to the number of conflicts between queens.
 \end{itemize}
 
 The algorithm starts with a specific temperature, which cools by a specified factor each iteration.
@@ -146,11 +147,11 @@ To elaborate on the acceptance criteria, there are basically three paths leading
 \end{enumerate}
 
 \subsection{Critical Issues}
-Unfortunately there are two main glaring issues with using simulated annealing for n-Queens with large \(n\).
+Unfortunately there are two main glaring issues with using simulated annealing specifically for n-Queens with large \(n\), and in general for CSP's where a 100\% accurate solution is expected.
 
 \subsubsection{Critical Issue 1: Stagnation}
-SA has the tendancy to stagnate (get stuck in local minima). Meaning it gets stuck on almost-but-not-really optimal solutions,
-usually within a \(2-3\%\) range of an optimal \(E = 0\) solution.
+SA has the tendancy to stagnate. This means the algorithm gets stuck on almost-but-not-really optimal solutions (local minima),
+usually within \(2-3\%\) of an optimal \(E = 0\) solution.
 This is acceptable for some problems such as the \href{https://en.wikipedia.org/wiki/Travelling_salesman_problem}{Travelling Salesman Problem}\textsuperscript{[14]},
 where complete accuracy isn't a requirement for the solution to be practical, but that isn't the case for n-Queens.
 
@@ -174,7 +175,7 @@ The amount of time required to fully converge gets very steep as \(n \to 1000\).
 Because of the two major issues stated above, SA was deemed to be a poor fit for this particular problem.
 
 However, the concept of dynamically adjusting agressiveness of action based on how close
-to a solution the algorithm currently is, was implemented in my final solution.
+to a solution the algorithm currently is, was implemented in the final solution.
 
 \section{Attempt Two: Min-Conflicts}
 \href{https://en.wikipedia.org/wiki/Min-conflicts_algorithm}{Min-conflicts}\textsuperscript{[15]}
@@ -238,7 +239,7 @@ This could be defined as something static such as $\frac{n}{4}$,
 but this way you increase the chances of wasting computation time the closer a stagnation occurs towards the end
 since you now have higher chances of wasting multiple carefully calculated correct queen placements each perturbation.
 
-My method for resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
+A pragmatic method for resolving this potential waste of resources is by calculating the perturbation amount dynamically using a modified version of SA.
 Instead of using temperature, this version is based on the ratio of the total board energy compared to the energy at the start of the entire problem.
 The closer the current board energy is to the start, the more agressive the algorithm is. By being more gentle toward the end,
 there is much less chance of losing a good board setup and having to start over.
@@ -257,12 +258,20 @@ Where:
     \item $\mathbf{E_{current}}$: current board energy
 \end{itemize}
 
+The formula calculates \( p \) as a linear interpolation between \( p_{\text{min}} \) and \( p_{\text{max}} \),
+based on the ratio of \( E_{\text{current}} \) to \( E_{\text{begin}} \).
+As the current energy level \( E_{\text{current}} \) approaches the initial energy level \( E_{\text{begin}} \),
+\( p \) approaches \( p_{\text{max}} \).
+Conversely, if \( E_{\text{current}} \) is low, \( p \) will be closer to \( p_{\text{min}} \).
+The ceiling function ensures that \( p \) is rounded up to the next integer so that always at least one perturbation will occur.
+
+
 In practice the following numbers were used:
 \[
     p = \left\lceil 1+\frac{E_{current}}{E_{begin}} \left(\frac{n}{10} - 1\right)\right\rceil
 \]
 
-This way, even when $E\to0$, a positive stagnation check will result in at least one perturbation so that an attempt to solve the stagnation is always made,
+As previously stated, even when $E\to0$, a positive stagnation check will result in at least one perturbation so that an attempt to solve the stagnation is always made,
 and at most $\frac{n}{10}$ perturbations.
 Making too many alterations to the board, e.g. $\frac{n}{4}$, is detrimental to the carefully computed board min-conflicts has constructed.
 Local minima in later stages can be escaped by smaller, non-overzealous perturbations.
@@ -393,7 +402,7 @@ Base cases are cases in which the algorithm is not applicable or cannot be used 
 \begin{itemize}
     \item $\boldsymbol{n = 1}$: Trivial solution. Only one location so only one queen possible. Only one queen so no possible attacks.
           Handle by always returning a queen in cell $(0, 0)$.
-    \item $\boldsymbol{\{ n \in \mathbbm{Z}^{+} \mid n < 4 \land n \neq 1\}}$: No solutions possible. Handle by always returning failiure.
+    \item $\boldsymbol{\{ n \in \mathbbm{Z} \mid n < 4 \land n \neq 1\}}$: No solutions possible. Handle by always returning failiure.
 \end{itemize}
 
 \clearpage
