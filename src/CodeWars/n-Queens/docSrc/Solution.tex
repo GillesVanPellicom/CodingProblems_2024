@@ -127,20 +127,20 @@ Each iteration, \(T\) is multiplied by \(\alpha\), \(T \coloneqq T \cdot \alpha\
 to cool the temperature and lower the chances of accepting a worse neighbor as the algorithm gets closer to a solution. More specifically:
 
 \[
-    \text{If } \left(\Delta E < 0 \lor \exp\left(\frac{-\Delta E}{T}\right) > x \text{ where } 0 \leq x \leq 1 \right)
+    \text{If } \left(\Delta E < 0 \lor \exp\left(\frac{-\Delta E}{T}\right) > x \text{ where } \{x \in \mathbb{R} \mid 0 \leq x \leq 1 \}\right)
 \]
 \[
     \text{Then accept the neighbor.}
 \]
 
 Where \( \exp(a) = e^a \), \( e \) is \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number}\textsuperscript{[13]}
-and \( x \) is randomized each iteration within given constraints. \((x \in \mathbb{R})\)
+and \( x \) is randomized each iteration within given constraints.
 
 To elaborate on the acceptance criteria, there are basically three paths leading to two outcomes:
 
 \begin{enumerate}
     \item \(\boldsymbol{\Delta E < 0}\). If the difference in energy is negative, the neighbor is better. Accept the neighbor.
-    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ where } 0 \leq x \leq 1}\)
+    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ where } \{x \in \mathbb{R} \mid 0 \leq x \leq 1 \}}\).
           If the first criterion is not met, calculate the chance this neighbor will be accepted based on the difference in energy and
           the current temperature. If that chance is greater than a randomly generated number \(x\) between \(0\) and \(1\), accept the neighbor.
     \item \textbf{If both criteria fail}, discard the neighbor.
@@ -279,7 +279,7 @@ Local minima in later stages can be escaped by smaller, non-overzealous perturba
 Following is the C++ implementation of this formula:
 
 \begin{lstlisting}
-    for (int i = 0; i < ceil(1.0 + (static_cast<double>(E_board) / E_begin) * (n / 10.0 - 1)); ++i) {
+    for (int i = 0; i < ceil(1.0 + (static_cast<double>(E_board) / E_begin) * (n / 10.0 - 1.0)); ++i) {
         // perform perturbation
     }
 \end{lstlisting}
