@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════════════════════╗
 // ║ Project      : CodeWars - Simpler Interactive Interpreter                        ║
-// ║ Version      : v0.1.1 "final 2ky version"                                        ║
+// ║ Version      : v0.1.1 "final 2kyu version"                                       ║
 // ║ File         : main.cpp                                                          ║
 // ║ Author(s)    : Gilles Van pellicom                                               ║
 // ║ Date         : 2024/10/12                                                        ║
@@ -215,7 +215,7 @@ std::string variableExpansion(const std::string& expression) {
 
 
 /**
- * Lexical analasys function.
+ * Lexical analysis function.
  * Splits expression up into lexemes
  * @param input expression as string
  * @return expression as lexemes, INFIX
@@ -381,7 +381,6 @@ double interpret(const std::string& expression) {
 }
 
 // int main() {
-//    std::cout << "Expected: 25" << std::endl;
-//    std::cout << "Actual: "<< interpret("(3 + 4 * 2 - (8 / 4) ^ 2) + (15 % 4) - (-3) + 2^3 - 5 * 2 + 7 * (6 / 3)") << std::endl;
+//    std::cout << interpret("x = 13 + (y = 3)") << std::endl;
 //      return 0;
 // }
