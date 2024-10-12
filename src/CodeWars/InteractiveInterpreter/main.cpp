@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════════════════════╗
 // ║ Project      : CodeWars - Simpler Interactive Interpreter                        ║
-// ║ Version      : v0.1.0 "java translation and update"                              ║
+// ║ Version      : v0.1.1 "final 2ky version"                                        ║
 // ║ File         : main.cpp                                                          ║
 // ║ Author(s)    : Gilles Van pellicom                                               ║
 // ║ Date         : 2024/10/12                                                        ║
@@ -9,12 +9,15 @@
 #include <algorithm>
 #include <vector>
 #include <stack>
-#include <map>
+#include <unordered_map>
 #include <regex>
 #include <cmath>
 #include <string>
+#include <iostream>
 
-
+// ╔════════════════════════════════════════╗
+// ║                 Errors                 ║
+// ╚════════════════════════════════════════╝
 /**
  * Error thrown when variable expansion fails
  */
@@ -37,6 +40,10 @@ class InvalidInputError final : public std::runtime_error {
 };
 
 
+// ╔════════════════════════════════════════╗
+// ║               Datatypes                ║
+// ╚════════════════════════════════════════╝
+
 /**
  * Lexeme type enumeration for type safety
  */
@@ -54,6 +61,24 @@ enum class Type {
 };
 
 
+// Input-defined variables
+std::unordered_map<std::string, std::string> variableDefinitions;
+
+
+// Lexer definitions
+std::unordered_map<Type, std::string> tokenDefinitions = {
+  { Type::NUMBER, R"(([0-9]+(\.[0-9]+)?))" },
+  { Type::PLUS,   R"(\+)" },
+  { Type::MIN,    R"(\-)" },
+  { Type::MUL,    R"(\*)" },
+  { Type::DIV,    R"(\/)" },
+  { Type::POW,    R"(\^)" },
+  { Type::MOD,    R"(\%)" },
+  { Type::LBRAC,  R"(\()" },
+  { Type::RBRAC,  R"(\))" }
+};
+
+
 /**
  * Lexeme object used by lexer
  */
@@ -65,6 +90,9 @@ struct Lexeme {
   }
 };
 
+// ╔════════════════════════════════════════╗
+// ║            Helper functions            ║
+// ╚════════════════════════════════════════╝
 
 /**
  * Applies the correct operation two operands.
@@ -105,33 +133,25 @@ static bool isOperator(const Type type) {
 static int getPrecedence(const Type operatorType) {
   switch (operatorType) {
     case Type::PLUS:
-    case Type::MIN: return 1;
+      [[fallthrough]];
+    case Type::MIN:
+      return 1;
+
     case Type::MUL:
+      [[fallthrough]];
     case Type::DIV:
-    case Type::MOD: return 2;
+      [[fallthrough]];
+    case Type::MOD:
+      return 2;
+
     case Type::POW:
-    case Type::UMIN: return 3;
-    default: return 0;
+      [[fallthrough]];
+    case Type::UMIN:
+      return 3;
+    default:
+      return 0;
   }
 }
-
-
-// Input-defined variables
-std::map<std::string, std::string> variableDefinitions;
-
-
-// Lexer definitions
-std::map<Type, std::string> tokenDefinitions = {
-  { Type::NUMBER, R"(([0-9]+(\.[0-9]+)?))" },
-  { Type::PLUS,   R"(\+)" },
-  { Type::MIN,    R"(\-)" },
-  { Type::MUL,    R"(\*)" },
-  { Type::DIV,    R"(\/)" },
-  { Type::POW,    R"(\^)" },
-  { Type::MOD,    R"(\%)" },
-  { Type::LBRAC,  R"(\()" },
-  { Type::RBRAC,  R"(\))" }
-};
 
 
 /**
@@ -147,6 +167,10 @@ std::string trim(const std::string& str) {
 }
 
 
+// ╔════════════════════════════════════════╗
+// ║            Evaluation Logic            ║
+// ╚════════════════════════════════════════╝
+
 /**
  * Function used to define a variable for later use
  * @param expression variable definition
@@ -154,8 +178,8 @@ std::string trim(const std::string& str) {
  */
 std::string defineVariable(const std::string& expression) {
   const size_t pos = expression.find('=');
-  std::string key = trim(expression.substr(0, pos - 1));
-  std::string value = '(' + expression.substr(pos + 1) + " )";
+  const std::string key = trim(expression.substr(0, pos - 1));
+  const std::string value = '(' + expression.substr(pos + 1) + " )";
 
   variableDefinitions[key] = value;
   return value;
@@ -181,8 +205,8 @@ std::string variableExpansion(const std::string& expression) {
       res = std::regex_replace(res, std::regex(varName), variableDefinitions[varName]);
     } else {
       // If variable is undefined, throw an error or handle it as needed
-      throw VariableExpansionError("ERROR: Invalid identifier. No variable with name '"
-        + varName + "' was found.");
+      throw VariableExpansionError("ERROR: Invalid identifier. No variable with name '" + varName
+        + "' was found.");
     }
   }
 
@@ -311,7 +335,7 @@ static double postfixEvaluator(const std::vector<Lexeme>& postfixLexemes) {
     // If current lexeme is an operator
     if (isOperator(curr.type)) {
       if (curr.type == Type::UMIN) {
-        double value = evalStack.top().value; // Get the top value
+        const double value = evalStack.top().value; // Get the top value
         evalStack.pop(); // Remove the top value from the stack
         evalStack.emplace(Type::NUMBER, -value); // Push the negated value back
         continue;
@@ -328,6 +352,10 @@ static double postfixEvaluator(const std::vector<Lexeme>& postfixLexemes) {
   return evalStack.top().value;
 }
 
+
+// ╔════════════════════════════════════════╗
+// ║     Evaluator Wrapper & Edge Cases     ║
+// ╚════════════════════════════════════════╝
 
 /**
  * Interpret expression and return calculated result
@@ -353,6 +381,7 @@ double interpret(const std::string& expression) {
 }
 
 // int main() {
-//    std::cout << interpret("(3 + 4 * 2 - (8 / 4) ^ 2) + (15 % 4) - (-3) + 2^3 - 5 * 2 + 7 * (6 / 3)") << std::endl;
+//    std::cout << "Expected: 25" << std::endl;
+//    std::cout << "Actual: "<< interpret("(3 + 4 * 2 - (8 / 4) ^ 2) + (15 % 4) - (-3) + 2^3 - 5 * 2 + 7 * (6 / 3)") << std::endl;
 //      return 0;
 // }

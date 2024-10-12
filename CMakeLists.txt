@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 project(CodingProblems_2024)
 
-set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare")
 set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare")  # Include warnings for C++ as well
 
