@@ -41,16 +41,16 @@ class InvalidInputError final : public std::runtime_error {
  * Lexeme type enumeration for type safety
  */
 enum class Type {
-  NUMBER, // "[0-9]+(\\.[0-9]+)?" E.g. 12, 3.14, 9999
-  PLUS, // "+" E.g. a + b
-  MIN, // "-" E.g. a - b
-  MUL, // "*" E.g. a * b
-  DIV, // "/" E.g. a / b
-  POW, // "^" E.g. a ^ b
-  MOD, // "%" E.g. a % b
-  UMIN, // "-" E.g. -b (Unary minus)
-  LBRAC, // "(" E.g. (12)
-  RBRAC // ")" E.g. (12)
+  NUMBER,   // "[0-9]+(\\.[0-9]+)?" E.g. 12, 3.14, 9999
+  PLUS,     // "+" E.g. a + b
+  MIN,      // "-" E.g. a - b
+  MUL,      // "*" E.g. a * b
+  DIV,      // "/" E.g. a / b
+  POW,      // "^" E.g. a ^ b
+  MOD,      // "%" E.g. a % b
+  UMIN,     // "-" E.g. -b (Unary minus)
+  LBRAC,    // "(" E.g. (12)
+  RBRAC     // ")" E.g. (12)
 };
 
 
@@ -145,6 +145,7 @@ std::string trim(const std::string& str) {
   auto right = std::find_if_not(str.rbegin(), str.rend(), ::isspace).base();
   return {left, right};
 }
+
 
 /**
  * Function used to define a variable for later use
@@ -291,7 +292,11 @@ static std::vector<Lexeme> shuntingYard(const std::vector<Lexeme>& infixLexemes)
 }
 
 
-// Evaluates an expression formatted as postfix lexemes
+/**
+ * Evaluates POSTFIX expression
+ * @param postfixLexemes vector of POSTFIX lexemes to be evaluated
+ * @return result as double
+ */
 static double postfixEvaluator(const std::vector<Lexeme>& postfixLexemes) {
   std::stack<Lexeme> evalStack;
 
@@ -348,6 +353,6 @@ double interpret(const std::string& expression) {
 }
 
 // int main() {
-//    std::cout << interpret("   = 5") << std::endl;
+//    std::cout << interpret("(3 + 4 * 2 - (8 / 4) ^ 2) + (15 % 4) - (-3) + 2^3 - 5 * 2 + 7 * (6 / 3)") << std::endl;
 //      return 0;
 // }
