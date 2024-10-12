@@ -275,7 +275,9 @@ std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenC
   if (n == 1) {
     // Trivial solution
     return "Q\n";
-  } else if (n < 4) {
+  }
+
+  if (n < 4) {
     // No solution
     return res;
   }
@@ -290,10 +292,10 @@ std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenC
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
       if (b[j] == i) {
-        res += "Q";
+        res += "Q ";
         continue;
       }
-      res += ".";
+      res += ". ";
     }
     res += "\n";
   }
@@ -303,13 +305,7 @@ std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenC
 
 int main() {
   using namespace nQueens;
-  constexpr int n = 6;
-
-  // Board b = minConflicts(n, {2, 1});
-  // for (int i = 0; i < n; ++i) {
-  //   std::cout << calculateE(b, i) << " ";
-  // }
-  // std::cout << std::endl;
+  constexpr int n = 500;
   // printBoard(b);
 
   // std::cout << std::endl << ". . . . Q .\n. . Q . . .\nQ . . . . .\n. . . . . Q\n. . . Q . .\n. Q . . . .\n";
