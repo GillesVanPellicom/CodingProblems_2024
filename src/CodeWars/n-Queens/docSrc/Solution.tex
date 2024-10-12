@@ -140,7 +140,7 @@ To elaborate on the acceptance criteria, there are basically three paths leading
 
 \begin{enumerate}
     \item \(\boldsymbol{\Delta E < 0}\). If the difference in energy is negative, the neighbor is better. Accept the neighbor.
-    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ where } \{x \in \mathbb{R} \mid 0 \leq x \leq 1 \}}\).
+    \item \(\boldsymbol{\exp\left(\frac{-\Delta E}{T}\right) > x \textbf{ where } \{x \in \mathbbm{R} \mid 0 \leq x \leq 1 \}}\).
           If the first criterion is not met, calculate the chance this neighbor will be accepted based on the difference in energy and
           the current temperature. If that chance is greater than a randomly generated number \(x\) between \(0\) and \(1\), accept the neighbor.
     \item \textbf{If both criteria fail}, discard the neighbor.
@@ -487,12 +487,6 @@ Although pure min-conflicts isn't able to handle this problem, by implementing t
 this method is very efficient at computing the n-Queens problem.
 
 \clearpage
-\section{Personal Notes}
-I imposed the constraint on myself to solve this problem only with general methods for CSP's,
-without looking at whitepapers outlining custom n-Queens solving algorithms. This to force
-myself to learn more universally applicable concepts.
-
-This problem wasn't easy in the slightest but I managed to get it in the and I got some entertainment out of it.
 
 \section*{References}
 In case you are viewing a printed version of this document and cannot click on the embedded links, the URLs are provided below for manual entry:
