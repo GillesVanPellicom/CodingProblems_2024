@@ -381,6 +381,6 @@ double interpret(const std::string& expression) {
 }
 
 // int main() {
-//    std::cout << interpret("x = 13 + (y = 3)") << std::endl;
+//    std::cout << interpret("(((12 * 7) ^ 3) / 3.5) + -(17 % (8 + 3)) + 20") << std::endl;
 //      return 0;
 // }
