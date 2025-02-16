@@ -1,4 +1,5 @@
 /cmake-build-debug/
+/cmake-build-debug-coverage/
 
 **/docSrc/*
 !**/docSrc/solution.tex
