@@ -1,3 +1,12 @@
+// ╔══════════════════════════════════════════════════════════════════════════════════╗
+// ║ Project      : CodeWars - n-Queens (minConflicts)                                ║
+// ║ Version      : v0.3.2 "Vector & general optimizations"                           ║
+// ║ File         : test.cpp                                                          ║
+// ║ Author(s)    : Gilles Van pellicom                                               ║
+// ║ Date         : 2024/09/19                                                        ║
+// ╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
 #include <gtest/gtest.h>
 #include <vector>
 #include <set>
@@ -9,7 +18,9 @@
 
 #include "main.cpp"
 
+
 constexpr int UNINITIALISED = -1;
+
 
 int rint(const int limit) {
   static std::default_random_engine rdEngine(std::random_device{}());
@@ -17,9 +28,11 @@ int rint(const int limit) {
   return nDistribution(rdEngine);
 }
 
+
 bool boardHasCorrectSize(const std::string& board, const int n) {
   return static_cast<int>(board.size()) == n * n + n;
 }
+
 
 std::pair<std::string, std::vector<int> > parse(const std::string& board, const int n) {
   int numQueens = 0;
@@ -47,6 +60,7 @@ std::pair<std::string, std::vector<int> > parse(const std::string& board, const 
   return {"Board with correct characters", queenCoords};
 }
 
+
 std::string noAttacks(const std::vector<int>& queenCoords) {
   const size_t n = queenCoords.size();
   std::vector<bool> takenCols(n);
@@ -64,12 +78,14 @@ std::string noAttacks(const std::vector<int>& queenCoords) {
   return "Board with no attacks between Queens";
 }
 
+
 std::string mandatoryQueenInCorrectPosition(const std::vector<int>& queenCoords,
                                             const std::pair<int, int>& mandatoryCoordinates) {
   if (queenCoords[mandatoryCoordinates.second] == mandatoryCoordinates.first)
     return "Mandatory queen in required position";
   return "Mandatory queen not in required position";
 }
+
 
 void checkBoard(const std::string& board, const int size, const std::pair<int, int>& mandatoryCoordinates) {
   EXPECT_EQ(boardHasCorrectSize(board, size), true) << "Board string has incorrect size";
@@ -82,18 +98,22 @@ void checkBoard(const std::string& board, const int size, const std::pair<int, i
   EXPECT_EQ(mandatoryQueenInCorrectPosition(queens, mandatoryCoordinates), "Mandatory queen in required position");
 }
 
+
 void testSolution(const int n, const std::pair<int, int>& mandatoryCoordinates) {
   const std::string& board = nQueens::solveNQueens(n, mandatoryCoordinates);
   checkBoard(board, n, mandatoryCoordinates);
 }
+
 
 void testNoSolution(const int n, const std::pair<int, int>& mandatoryCoordinates) {
   const std::string& board = nQueens::solveNQueens(n, mandatoryCoordinates);
   EXPECT_EQ(board.empty(), true) << "Expected empty solution string, but got: " << board;
 }
 
+
 class NQueensTest : public ::testing::Test {
 };
+
 
 TEST_F(NQueensTest, BasicTests) {
   testSolution(4, {2, 0});
@@ -101,11 +121,13 @@ TEST_F(NQueensTest, BasicTests) {
   testSolution(1, {0, 0});
 }
 
+
 TEST_F(NQueensTest, NoSolution) {
   testNoSolution(2, {0, 0});
   testNoSolution(3, {2, 0});
   testNoSolution(6, {0, 0});
 }
+
 
 TEST_F(NQueensTest, RandomTestsSmallN) {
   std::default_random_engine rdEngine(std::random_device{}());
@@ -150,11 +172,13 @@ TEST_F(NQueensTest, RandomTestsSmallN) {
   }
 }
 
+
 TEST_F(NQueensTest, RandomTestsLargerN) {
   testSolution(rint(10) + 10, {rint(10), rint(10)});
   testSolution(rint(5) + 15, {rint(15), rint(15)});
   testSolution(rint(5) + 20, {rint(20), rint(20)});
 }
+
 
 TEST_F(NQueensTest, RandomTestsLargeN) {
   testSolution(rint(50) + 100, {rint(100), rint(100)});
@@ -162,11 +186,71 @@ TEST_F(NQueensTest, RandomTestsLargeN) {
   testSolution(rint(50) + 300, {rint(300), rint(300)});
 }
 
+
 TEST_F(NQueensTest, RandomTestsEvenLargerN) {
   testSolution(rint(100) + 500, {rint(500), rint(500)});
   testSolution(rint(100) + 650, {rint(650), rint(650)});
   testSolution(rint(100) + 750, {rint(750), rint(750)});
 }
+
+
+TEST_F(NQueensTest, MeasureExecutionTime) {
+  constexpr int n = 2000;  // Size of the problem
+  constexpr int x = 50;    // Number of times to run the test
+
+  // Vector containing the parameter for your function
+  std::vector<int> params = {1, 0};
+
+  // Variables to store the sum of execution times and the sum of logarithms
+  long long totalTime = 0;
+  double logSum = 0.0;
+
+  // Start measuring the total elapsed time
+  const auto totalStart = std::chrono::high_resolution_clock::now();
+
+  // Run the test x times
+  for (int i = 0; i < x; ++i) {
+    // Start measuring time for each individual run
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Call the function
+    const std::string res = nQueens::solveNQueens(n, {0, 1});
+
+    // Stop measuring time for each individual run
+    auto end = std::chrono::high_resolution_clock::now();
+
+    // Calculate the elapsed time in milliseconds for this run
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    const auto time = duration.count();
+
+    // Accumulate the total execution time
+    totalTime += time;
+
+    // Accumulate the sum of logarithms of the execution times for geomean
+    logSum += std::log(time);
+  }
+
+  // Calculate geometric mean
+  const double geoMean = std::exp(logSum / x);
+
+  // Calculate average execution time
+  const double avgTime = static_cast<double>(totalTime) / x;
+
+  // Measure the total time elapsed for all runs
+  const auto totalEnd = std::chrono::high_resolution_clock::now();
+  const auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(totalEnd - totalStart);
+
+  // Convert total time to seconds
+  double totalTimeInSeconds = totalDuration.count() / 1000.0;
+
+  // Print both the geometric mean, average execution time, and total time elapsed
+  std::cout
+      << "Execution times over " << x << " runs (n = " << n << ")\n"
+      << "\tGeomean: " << geoMean << " ms \n"
+      << "\tAverage: " << avgTime << " ms\n"
+      << "\nTotal time elapsed: " << totalTimeInSeconds << " s" << std::endl;
+}
+
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

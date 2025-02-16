@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════════════════════╗
 // ║ Project      : CodeWars - n-Queens (minConflicts)                                ║
-// ║ Version      : v0.3.1 "general optimizations & cleanup"                          ║
+// ║ Version      : v0.3.2 "Vector & general optimizations"                           ║
 // ║ File         : main.cpp                                                          ║
 // ║ Author(s)    : Gilles Van pellicom                                               ║
 // ║ Date         : 2024/08/22                                                        ║
@@ -140,7 +140,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
   int E_board = 0;
 
   // Max iterations before algorithm gives up
-  constexpr int iterationMax = 4000;
+  constexpr int iterationMax = 8000;
 
   // Stagnation detection variables
   const int stagnationCheckInterval = 10 * n;
@@ -282,7 +282,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 }
 
 
-std::string formatBoard(const Board& b, int n, const std::string& delimiter) {
+std::string formatBoard(const Board& b, const int n, const std::string& delimiter) {
   std::string res;
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
