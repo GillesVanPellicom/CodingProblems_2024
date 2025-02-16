@@ -27,7 +27,7 @@ int stagnationCount = 0;
 /**
  * Calculates the energy (E) of the entire board.
  * The higher E, the more conflicts.
- * No conflicts means E = 0
+ * No conflicts ⇒ E = 0
  * @param b Board from which to calculate E
  * @return energy as 𝕫⁺
  */
@@ -36,11 +36,11 @@ inline int calculateFullE(const Board& b) {
   int E = 0;
   for (int i = 0; i < n; ++i) {
     // Don't count i == j
-    auto & _b = b[i];
+    const int b_i = b[i];
     for (int j = i + 1; j < n; ++j) {
       // if (not in same col) or (not in same diagonal)
       // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
-      if (_b == b[j] || std::abs(_b - b[j]) == std::abs(i - j)) {
+      if (const int b_j = b[i]; b_i == b_j || std::abs(b_i - b_j) == std::abs(i - j)) {
         ++E;
       }
     }
@@ -258,7 +258,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 
       // Calculate E for the tentative placement
       for (int i = 0; i < n; ++i) {
-        if (b[i] == col || std::abs(b[i] - col) == std::abs(i - row)) {
+        if (const int b_i = b[i]; b_i == col || std::abs(b_i - col) == std::abs(i - row)) {
           E_current++;
         }
       }
@@ -282,58 +282,65 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 }
 
 
+std::string formatBoard(const Board& b, int n, const std::string& delimiter) {
+  std::string res;
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (b[j] == i) {
+        res += "Q" + delimiter;
+        continue;
+      }
+      res += "." + delimiter;
+    }
+    res += "\n";
+  }
+  return res;
+}
+
 std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
   std::string res;
 
   // Base cases {n ∈ ℤ | n < 4}
-  if (n == 1) {
-    // Trivial solution
-    return "Q\n";
-  }
-
-  if (n < 4) {
-    // No solution
-    return res;
-  }
+  if (n == 1) return "Q\n"; // Trivial solution
+  if (n < 4) return res; // No solution
 
   const Board b = minConflicts(n, mandatoryQueenCoordinates);
+  if (b.empty()) return res;
 
-  if (b.empty()) {
-    // std::cout << "No solution possible" << std::endl;
-    return res;
-  }
+  return formatBoard(b, n, "");
+}
 
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < n; ++j) {
-      if (b[j] == i) {
-        res += "Q ";
-        continue;
-      }
-      res += ". ";
-    }
-    res += "\n";
-  }
-  return move(res);
+std::string solveNQueensPretty(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
+  std::string res;
+
+  // Base cases {n ∈ ℤ | n < 4}
+  if (n == 1) return "Q\n"; // Trivial solution
+  if (n < 4) return res; // No solution
+
+  const Board b = minConflicts(n, mandatoryQueenCoordinates);
+  if (b.empty()) return res;
+
+  return formatBoard(b, n, " ");
 }
 }
 
 
-int main() {
-  using namespace nQueens;
-  constexpr int n = 500;
-
-  // Start time measurement
-  const auto start = std::chrono::high_resolution_clock::now();
-
-  const std::string res = solveNQueens(n, {1, 0});
-
-  // End time measurement
-  const auto end = std::chrono::high_resolution_clock::now();
-  const std::chrono::duration<double> duration = end - start;
-
-  // Output the result and the time taken
-  std::cout << res << std::endl;
-  std::cout << "Time elapsed: " << duration.count() << " seconds" << std::endl;
-
-  return 0;
-}
+// int main() {
+//   using namespace nQueens;
+//   constexpr int n = 1000;
+//
+//   // Start time measurement
+//   const auto start = std::chrono::high_resolution_clock::now();
+//
+//   const std::string res = solveNQueensPretty(n, {1, 0});
+//
+//   // End time measurement
+//   const auto end = std::chrono::high_resolution_clock::now();
+//   const std::chrono::duration<double> duration = end - start;
+//
+//   // Output the result and the time taken
+//   std::cout << res << std::endl;
+//   std::cout << "Time elapsed: " << duration.count() << " seconds" << std::endl;
+//
+//   return 0;
+// }

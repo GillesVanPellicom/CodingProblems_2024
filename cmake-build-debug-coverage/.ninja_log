@@ -1,3 +1,25 @@
 # ninja log v6
-0	387	1739727867407987957	CMakeFiles/n-Queens_MC.dir/src/CodeWars/n-Queens/MinConflicts/main.cpp.o	1d40214461d990c2
-388	432	1739727867795908806	n-Queens_MC	676d9534ecd609ba
+540	577	1739729772412689696	RGB_to_hex_conversion_tests	3c556f54c21ed93a
+550	587	1739729754167612742	n-Queens_MC	e49c0b839fc16ede
+4	550	1739729753622013479	CMakeFiles/n-Queens_MC.dir/src/CodeWars/n-Queens/MinConflicts/main.cpp.o	8b54bc8bf0fb48c9
+790	829	1739730404660016435	n-Queens_MC_tests	5260cba13ab022f5
+1	539	1739729771873614441	CMakeFiles/RGB_to_hex_conversion_tests.dir/src/CodeWars/RGB_to_hex_conversion/tests.cpp.o	ac0e33a3c1d1172d
+5	790	1739730403874461884	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+5	933	1739730464850677202	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+933	970	1739730465778874675	n-Queens_MC_tests	5260cba13ab022f5
+5	788	1739730511294998718	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+788	825	1739730512078550090	n-Queens_MC_tests	5260cba13ab022f5
+5	799	1739730687822723410	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+799	836	1739730688617220053	n-Queens_MC_tests	5260cba13ab022f5
+5	800	1739730820657504693	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+800	838	1739730821452695547	n-Queens_MC_tests	5260cba13ab022f5
+5	783	1739731002142963760	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+783	821	1739731002921274645	n-Queens_MC_tests	5260cba13ab022f5
+5	801	1739731044123999576	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+801	839	1739731044920247020	n-Queens_MC_tests	5260cba13ab022f5
+6	808	1739731096886292836	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+808	847	1739731097688375713	n-Queens_MC_tests	5260cba13ab022f5
+5	791	1739731105288745675	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+791	831	1739731106074631190	n-Queens_MC_tests	5260cba13ab022f5
+4	774	1739731287850746435	CMakeFiles/n-Queens_MC_tests.dir/src/CodeWars/n-Queens/MinConflicts/test.cpp.o	661b5e4527352841
+775	812	1739731288621147890	n-Queens_MC_tests	5260cba13ab022f5

@@ -24,7 +24,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 15,
+				"line" : 20,
 				"parent" : 0
 			}
 		]
@@ -35,7 +35,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fsanitize=address -fsanitize=undefined -g -std=gnu++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fcolor-diagnostics"
+					"fragment" : "-Wall -pedantic -Wsign-compare -Ofast  -g -std=gnu++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fcolor-diagnostics"
 				}
 			],
 			"language" : "CXX",
@@ -59,7 +59,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fsanitize=address -fsanitize=undefined -g",
+				"fragment" : "-Wall -pedantic -Wsign-compare -Ofast  -g",
 				"role" : "flags"
 			},
 			{

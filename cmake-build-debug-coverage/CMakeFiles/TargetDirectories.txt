@@ -3,6 +3,7 @@
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/Snail_sort.dir
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/n-Queens_SA.dir
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/n-Queens_MC.dir
+/Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/n-Queens_MC_tests.dir
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/REPL.dir
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/REPL_tests.dir
 /Users/gvp/CLionProjects/CodingProblems_2024/cmake-build-debug-coverage/CMakeFiles/edit_cache.dir

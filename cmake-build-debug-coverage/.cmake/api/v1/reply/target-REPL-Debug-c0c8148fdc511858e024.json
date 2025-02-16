@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "n-Queens_MC"
+			"path" : "REPL"
 		}
 	],
 	"backtrace" : 1,
@@ -24,7 +24,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 24,
+				"line" : 33,
 				"parent" : 0
 			}
 		]
@@ -35,7 +35,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fsanitize=address -fsanitize=undefined -g -std=gnu++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fcolor-diagnostics"
+					"fragment" : "-Wall -pedantic -Wsign-compare -Ofast  -g -std=gnu++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -fcolor-diagnostics"
 				}
 			],
 			"language" : "CXX",
@@ -53,13 +53,13 @@
 			]
 		}
 	],
-	"id" : "n-Queens_MC::@6890427a1f51a3e7e1df",
+	"id" : "REPL::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fsanitize=address -fsanitize=undefined -g",
+				"fragment" : "-Wall -pedantic -Wsign-compare -Ofast  -g",
 				"role" : "flags"
 			},
 			{
@@ -69,8 +69,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "n-Queens_MC",
-	"nameOnDisk" : "n-Queens_MC",
+	"name" : "REPL",
+	"nameOnDisk" : "REPL",
 	"paths" : 
 	{
 		"build" : ".",
@@ -91,7 +91,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/CodeWars/n-Queens/MinConflicts/main.cpp",
+			"path" : "src/CodeWars/InteractiveInterpreter/main.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
