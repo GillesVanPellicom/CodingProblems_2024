@@ -48,7 +48,7 @@ class InvalidInputError final : public std::runtime_error {
  * Lexeme type enumeration for type safety
  */
 enum class Type {
-  NUMBER,   // "[0-9]+(\\.[0-9]+)?" E.g. 12, 3.14, 9999
+  NUMBER,   // "[0-9]+(\.[0-9]+)?" E.g. 12, 3.14, 9999
   PLUS,     // "+" E.g. a + b
   MIN,      // "-" E.g. a - b
   MUL,      // "*" E.g. a * b
@@ -222,7 +222,7 @@ std::string variableExpansion(const std::string& expression) {
  */
 std::vector<Lexeme> lexer(const std::string& input) {
   std::vector<Lexeme> lexemes;
-  std::regex pattern("([0-9]+(\\.[0-9]+)?)|[-+*/()^%]");
+  std::regex pattern(R"(([0-9]+(\.[0-9]+)?)|[-+*/()^%])");
   auto tokens_begin = std::sregex_iterator(input.begin(), input.end(), pattern);
   auto tokens_end = std::sregex_iterator();
 
@@ -382,5 +382,6 @@ double interpret(const std::string& expression) {
 
 // int main() {
 //    std::cout << interpret("(((12 * 7) ^ 3) / 3.5) + -(17 % (8 + 3)) + 20") << std::endl;
+//    // std::cout << interpret("5/0") << std::endl;
 //      return 0;
 // }

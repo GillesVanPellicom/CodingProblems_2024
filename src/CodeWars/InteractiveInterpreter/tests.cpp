@@ -55,7 +55,6 @@ TEST(ArithmeticTests, BasicPower) {
 }
 
 
-
 TEST(OperatorPrecedenceTests, BasicPrecedence) {
     EXPECT_EQ(interpret("4 + 2 * 3"), 10);
     EXPECT_EQ(interpret("4 / 2 * 3"), 6);

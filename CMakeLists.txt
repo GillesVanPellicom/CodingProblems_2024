@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.28)
 project(CodingProblems_2024)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare")
-set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare")  # Include warnings for C++ as well
+set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
 
-set(SANITIZER_FLAGS "-fsanitize=address -fsanitize=undefined")  # Separate flags for clarity
+set(SANITIZER_FLAGS "-fsanitize=address -fsanitize=undefined")
 
-# Add sanitizer flags for both C and C++
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SANITIZER_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
 
