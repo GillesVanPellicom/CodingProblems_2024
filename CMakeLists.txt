@@ -3,12 +3,12 @@ project(CodingProblems_2024)
 
 set(CMAKE_CXX_STANDARD 17)
 # Profiling flags
-#set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
-#set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
+set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
 
 # Default flags
-set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare -Ofast")
-set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare -Ofast")
+#set(CMAKE_C_FLAGS "-Wall -pedantic -Wsign-compare -Ofast")
+#set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wsign-compare -Ofast")
 
 #set(SANITIZER_FLAGS "-fsanitize=address -fsanitize=undefined")
 

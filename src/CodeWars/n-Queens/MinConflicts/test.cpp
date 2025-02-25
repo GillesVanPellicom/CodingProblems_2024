@@ -195,13 +195,11 @@ TEST_F(NQueensTest, RandomTestsEvenLargerN) {
 
 
 TEST_F(NQueensTest, MeasureExecutionTime) {
-  constexpr int n = 2000;  // Size of the problem
-  constexpr int x = 50;    // Number of times to run the test
+  constexpr int n = 500; // Size of the problem
+  constexpr int x = 50; // Number of times to run the test
+  constexpr std::pair<int, int> mQueen = {1, 0}; // Mandatory queen
 
-  // Vector containing the parameter for your function
-  std::vector<int> params = {1, 0};
-
-  // Variables to store the sum of execution times and the sum of logarithms
+  // Variables to calculate geomean
   long long totalTime = 0;
   double logSum = 0.0;
 
@@ -210,24 +208,17 @@ TEST_F(NQueensTest, MeasureExecutionTime) {
 
   // Run the test x times
   for (int i = 0; i < x; ++i) {
-    // Start measuring time for each individual run
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Call the function
-    const std::string res = nQueens::solveNQueens(n, {0, 1});
+    const std::string res = nQueens::solveNQueens(n, mQueen);
 
-    // Stop measuring time for each individual run
     auto end = std::chrono::high_resolution_clock::now();
 
-    // Calculate the elapsed time in milliseconds for this run
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    const auto time = duration.count();
+    const auto time = duration.count(); // Calculate the elapsed time for this run (in ms)
 
-    // Accumulate the total execution time
-    totalTime += time;
-
-    // Accumulate the sum of logarithms of the execution times for geomean
     logSum += std::log(time);
+    totalTime += time;
   }
 
   // Calculate geometric mean
@@ -241,18 +232,18 @@ TEST_F(NQueensTest, MeasureExecutionTime) {
   const auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(totalEnd - totalStart);
 
   // Convert total time to seconds
-  double totalTimeInSeconds = totalDuration.count() / 1000.0;
+  const double totalTimeInSeconds = static_cast<double>(totalDuration.count()) / 1000.0;
 
   // Print both the geometric mean, average execution time, and total time elapsed
   std::cout
       << "Execution times over " << x << " runs (n = " << n << ")\n"
-      << "\tGeomean: " << geoMean << " ms \n"
+      << "\tGeomean: " << geoMean << " ms\n"
       << "\tAverage: " << avgTime << " ms\n"
       << "\nTotal time elapsed: " << totalTimeInSeconds << " s" << std::endl;
 }
 
 
 int main(int argc, char** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
+  testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

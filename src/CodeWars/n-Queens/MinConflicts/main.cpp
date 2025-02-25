@@ -12,8 +12,7 @@
 #include <cstdlib>
 #include <random>
 #include <string>
-// #include <chrono>
-// #include "../../utils/ArrayUtils.cpp"
+#include <chrono>
 
 
 namespace nQueens {
@@ -29,7 +28,7 @@ int stagnationCount = 0;
  * The higher E, the more conflicts.
  * No conflicts ⇒ E = 0
  * @param b Board from which to calculate E
- * @return energy as 𝕫⁺
+ * @return energy as ℤ⁺
  */
 inline int calculateFullE(const Board& b) {
   const int n = static_cast<int>(b.size()) - 1;
@@ -38,7 +37,7 @@ inline int calculateFullE(const Board& b) {
     // Don't count i == j
     const int b_i = b[i];
     for (int j = i + 1; j < n; ++j) {
-      // if (not in same col) or (not in same diagonal)
+      // If (not in same col) or (not in same diagonal),
       // row doesn't need to be checked since the code doesn't allow two queens to generate in one row.
       if (const int b_j = b[i]; b_i == b_j || std::abs(b_i - b_j) == std::abs(i - j)) {
         ++E;
@@ -77,6 +76,10 @@ Board generateBoard(const int n, const std::pair<int, int>& mandatoryQueenCoordi
   // Declare random devices
   static std::uniform_int_distribution<> bestColRand;
 
+  // Declare vector to store best columns
+  static std::vector<int> bestCols;
+  bestCols.reserve(n);
+
   // Set conflicts for the mandatory queen
   colConflicts[my]++;
   diagConflicts[mx - my + (n - 1)]++;
@@ -87,15 +90,13 @@ Board generateBoard(const int n, const std::pair<int, int>& mandatoryQueenCoordi
     if (i == mx) continue; // Skip the mandatory queen's row
 
     int minConflicts = n + 1; // Max possible conflicts + 1
-    static std::vector<int> bestCols;
     bestCols.clear();
-    bestCols.reserve(n);
 
     // Evaluate all columns in row `i` to find those with the fewest conflicts
     for (int col = 0; col < n; ++col) {
       // Calculate conflicts for the column
 
-      // Update the best columns if this placement is as good as the current best
+      // Update the best columns if this placement is as good or better as the current best
       if (const int conflicts = colConflicts[col] + diagConflicts[i - col + (n - 1)] + antiDiagConflicts[i + col];
         conflicts < minConflicts) {
         minConflicts = conflicts;
@@ -155,6 +156,10 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
   static std::uniform_int_distribution<> conflictGen;
   static std::uniform_int_distribution<> bestColRand;
 
+  // Declare vector to store rows with highest conflicts
+  static std::vector<int> highestConflictRows;
+  highestConflictRows.reserve(n);
+
   // Main loop
   while (true) {
     if (iterationCount >= iterationMax) {
@@ -164,9 +169,10 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
 
     iterationCount++;
 
-    static std::vector<int> highestConflictRows;
+    // Clear highest conflict rows from potential previous iterations
     highestConflictRows.clear();
-    highestConflictRows.reserve(n);
+
+    // Energy variables
     int E_best = 0;
     int E_total = 0;
 
@@ -203,7 +209,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
     // Check if solution satisfies constraints
     if (E_board == 0) {
       // Solution found
-      return b;
+      return move(b);
     }
 
     // STEP 2: check/resolve stagnation
@@ -211,6 +217,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
     if (iterationCount % stagnationIntervalOne == 0) {
       stagnationSampleTwo = E_board;
     }
+
     if (iterationCount % stagnationIntervalTwo == 0) {
       stagnationSampleThree = E_board;
     }
@@ -223,7 +230,6 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
         stagnationSampleOne == E_board) {
         // Stagnation detected.
         stagnationCount++;
-        // std::cout << "Stagnation count = " << stagnationCount << std::endl;
 
         // Attempt to escape local minima by perturbing the board
         // Perturbation amount calculated using modified variant of simulated annealing.
@@ -236,11 +242,11 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
           if (row == queenPos.first) {
             continue;
           }
-          // perturbation
+          // Perturbation
           b[row] = nGen(gen);
         }
       }
-      // take new sampleOne for next stagnation check
+      // Take new sampleOne for next stagnation check
       stagnationSampleOne = E_board;
     }
 
@@ -278,7 +284,7 @@ Board minConflicts(const int n, const std::pair<int, int>& queenPos) {
     b[row] = bestCols[bestColRand(gen)];
   }
   // Unreachable but I like it so it can stay
-  return b;
+  return move(b);
 }
 
 
@@ -294,15 +300,16 @@ std::string formatBoard(const Board& b, const int n, const std::string& delimite
     }
     res += "\n";
   }
-  return res;
+  return move(res);
 }
+
 
 std::string solveNQueens(const int n, const std::pair<int, int>& mandatoryQueenCoordinates) {
   std::string res;
 
   // Base cases {n ∈ ℤ | n < 4}
   if (n == 1) return "Q\n"; // Trivial solution
-  if (n < 4) return res; // No solution
+  if (n < 4) return move(res); // No solution
 
   const Board b = minConflicts(n, mandatoryQueenCoordinates);
   if (b.empty()) return res;
@@ -315,7 +322,7 @@ std::string solveNQueensPretty(const int n, const std::pair<int, int>& mandatory
 
   // Base cases {n ∈ ℤ | n < 4}
   if (n == 1) return "Q\n"; // Trivial solution
-  if (n < 4) return res; // No solution
+  if (n < 4) return move(res); // No solution
 
   const Board b = minConflicts(n, mandatoryQueenCoordinates);
   if (b.empty()) return res;
@@ -327,7 +334,7 @@ std::string solveNQueensPretty(const int n, const std::pair<int, int>& mandatory
 
 // int main() {
 //   using namespace nQueens;
-//   constexpr int n = 1000;
+//   constexpr int n = 10000;
 //
 //   // Start time measurement
 //   const auto start = std::chrono::high_resolution_clock::now();
